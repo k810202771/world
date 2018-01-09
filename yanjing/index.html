@@ -1,10 +1,39 @@
 <!DOCTYPE html>
 <html>
-<head lang="en">
+<head lang="zh-CN">
     <meta charset="UTF-8">
     <title></title>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="icon-font/iconfont.css"/>
+    <script src="js/vue.js"></script>
+    <script>
+        (function(){
+            var element=['header','footer','article','aside','section','nav','menu','details','dialog','figure'],
+                    len=element.length;
+            var i=0;
+            while(i<len){
+                document.createElement(element[i])
+                i++;
+            }
+        })();
+    </script>
 </head>
 <body>
+
+<herader id="herader">
+    <div id="head_box" class="box">
+        <div id="logo"></div>
+        <span style="font-family:'iconfont';">&#xe666;我的国家</span>
+    </div>
+</herader>
+
+<article>
+    <section></section>
+</article>
+
+<footer>
+
+</footer>
 
 </body>
 </html>
