@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="css/style.css"/>
     <link rel="stylesheet" href="icon-font/iconfont.css"/>
     <script src="js/vue.js"></script>
+    <script src="js/Worm.js"></script>
     <script>
         (function(){
             var element=['header','footer','article','aside','section','nav','menu','details','dialog','figure'],
@@ -22,12 +23,18 @@
 
 <herader id="herader">
     <div id="head_box" class="box">
-        <div id="logo"></div>
-        <span style="font-family:'iconfont';">&#xe666;我的国家</span>
+        <div id="head_left"></div>
+        <div id="head_right">
+            <a>&#xe6e6; <div>微博</div></a>
+            <a>&#xe61e; <div>QQ</div></a>
+            <a>&#xe65d;<div>微信</div></a>
+            <a>&#xe652;<div>电话</div></a>
+            <a>&#xe678;<div>旺旺</div></a>
+        </div>
     </div>
 </herader>
 
-<article>
+<article style="background: #000;height: 200px">
     <section></section>
 </article>
 
@@ -36,4 +43,20 @@
 </footer>
 
 </body>
+<script>
+    var  headRight = new Vue({
+        el:'#head_right'
+    });
+    var headRightA = headRight.$el.children;
+    for(var i = 0;i<headRightA.length;i++){
+        headRightA[i].onmousemove = function () {
+            this.getElementsByTagName("div")[0].style.display = "block";
+        }
+        headRightA[i].onmouseout = function () {
+            this.getElementsByTagName("div")[0].style.display = "";
+        }
+    }
+    var cca = new Worm({el:"#head_right",onclick: "console.log(that.el) "});
+    var ccab = new Worm({el:"#head_left",onclick:"console.log(that.el) "  });
+</script>
 </html>
