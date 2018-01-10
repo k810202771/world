@@ -5,8 +5,7 @@ function dataset(that) {
     var value,text;
     value=text=that.OriginalHTML
     var p = eval("/\{\{(.*?)\}\}/g");
-    for(var i in that){
-        console.log(that)
+    for(var i in that.data){
         while ((result = p.exec(text)) != null)  {
             if(result[1].replace(/\s/g,"") == i){
                 value=value.replace(result[0],that.data[i]);
@@ -14,6 +13,15 @@ function dataset(that) {
         }
     }
     that.el.innerHTML = value;
+}
+
+ValueHookAPI = function(that,e,key) {
+    Object.defineProperty(e,key,{
+        set:function (val){
+            that.data[key] = val;
+            dataset(that);
+        }
+    });
 }
 //AccessNode 文本转节点
 function AccessNode(text){
@@ -47,19 +55,15 @@ Worm = function (op){
     //this.el = that.options.el
     that.OriginalHTML = that.el.innerHTML;
 
-
     for(var data in that.data) {
-        Object.defineProperty(this,data,{
-            set:function (val){
-                dataset(this);
-            }
-        });
+        new ValueHookAPI(that,this,data)
     }
 
     //执行事件
     if(!that.el.length){
         //针对 ID 单个类型
         dataset(that);
+
         //按下事件
         that.onclick?that.el.onclick=function(e){that.onclick(e)}:null;
     }else{
@@ -70,6 +74,5 @@ Worm = function (op){
         }
     }
     for(var i in that)this[i] = that[i];
-
 }
 
