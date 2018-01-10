@@ -25,7 +25,7 @@ Worm = function (op){
         onclick:null,
         data:null,
     }
-
+ 
     for(var i in op)that.options[i] = op[i];
 
     that.options.el = AccessNode(that.options.el);
