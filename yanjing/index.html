@@ -35,8 +35,17 @@
 
 
     <div id='example-3'>
-        <span>Checked names: {{ checkedNames }} {{ checkedNames2 }}</span>
+        {{ NAME }}{{ NAME }}
+        <span>Checked names:{{ NAME }} {{ CCDD }}{{ CCDD }}{{ CCDD }}</span>
+        {{ NAME }}
     </div>
+
+
+    <div id="app-5">
+        <p>{{ message }}</p>
+    </div>
+
+
 </herader>
 
 <article style="background: #000;height: 200px" >
@@ -50,7 +59,23 @@
 </body>
 <script>
     var cca = new Worm({el:"#head_right",onclick:function(){console.log(this)}});
-    var ccab = new Worm({el:"#example-3",data:{ checkedNames2:"1234",checkedNames:"123"}});
+    var app5 = new Vue({
+        el: '#app-5',
+        data: {
+            message: 'Hello Vue.js!'
+        }})
+    var ccab = new Worm({
+        el:"#example-3",
+        data:{
+            NAME:"我的",
+            CCDD:"你的w"
+    },
+        onclick:function(){
+            app5.message = "123";
+            ccab.NAME = "wd";
+        }
+    });
+
     var headRightA = cca.el.getElementsByTagName("a");
     for(var i = 0;i<headRightA.length;i++){
         headRightA[i].onmousemove = function () {
@@ -60,5 +85,6 @@
             this.getElementsByTagName("div")[0].style.display = "";
         }
     }
+
 </script>
 </html>
