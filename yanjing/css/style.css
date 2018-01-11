@@ -1,5 +1,5 @@
 /*html5*/
-article,aside,dialog,footer,header,section,footer,nav,figure,menu{display:block}
+header,footer,article,aside,section,nav,menu,details,dialog,figure{display:block}
 body,html{margin: 0;width:100%;height: 100%;}
 .box{width:100%;max-width: 1200px;min-width: 990px;margin:0 auto;}
 #herader{text-align: center;height: 55px;}
@@ -20,9 +20,10 @@ body,html{margin: 0;width:100%;height: 100%;}
     font-family:'iconfont';
     font-size:24px;
     line-height: 55px;
-    float: right;
-    margin-right: 20px;
+    right: 20px;
     text-align: center;
+    position: absolute;
+    z-index: 3;
 }
 #head_right > a{
     cursor: default;
@@ -41,7 +42,31 @@ body,html{margin: 0;width:100%;height: 100%;}
     display: none;
 }
 #head_right > a:hover{
+    position: relative;
     font-size:28px;
     height: 70px;
     background: #eee;
+}
+#poster_bg{
+    background:url("../image/head_bg.jpg") no-repeat 50% 0;
+
+    height: 500px;
+}
+#menu{
+    position: absolute;
+    max-width: 100%;
+    height: 90px;
+    line-height: 90px;
+    text-align: right;
+}
+#menu>span{
+    font:16px "微软雅黑";
+    padding-right:20px;
+}
+#menu>span>a{
+    padding:5px;
+}
+#menu>span>a+a:before{
+    content:"/";
+    margin-right: 10px;
 }

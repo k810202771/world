@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="css/style.css"/>
     <link rel="stylesheet" href="icon-font/iconfont.css"/>
     <script src="js/Worm.js"></script>
-    <script src="js/vue.js"></script>
     <script>
         (function(){
             var element=['header','footer','article','aside','section','nav','menu','details','dialog','figure'],
@@ -20,7 +19,7 @@
     </script>
 </head>
 <body>
-
+<!--页头-->
 <herader id="herader">
     <div id="head_box" class="box">
         <div id="head_left"></div>
@@ -32,52 +31,61 @@
             <a>&#xe678;<div>旺旺</div></a>
         </div>
     </div>
-
-
-    <div id='example-3'>
-        {{ NAME }}{{ NAME }}
-        <span>Checked names:{{ NAME }} {{ CCDD }}{{ CCDD }}{{ CCDD }}</span>
-        {{ NAME }}
-    </div>
-
-
-    <div id="app-5">
-        <p>{{ message }}</p>
-    </div>
-
-
 </herader>
-
-<article style="background: #000;height: 200px" >
+<!--页面内容-->
+<article>
+    <div id="poster_bg">
+        <div id="menu" class="box">
+            <span>
+                <a>{{menu1}}</a>
+                <a>{{menu2}}</a>
+                <a>{{menu3}}</a>
+                <a>{{menu4}}</a>
+                <a>{{menu5}}</a>
+                <a>{{menu6}}</a>
+            </span>
+        </div>
+    </div>
     <section></section>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 </article>
 
+
+<!--页尾-->
 <footer>
 
 </footer>
 
 </body>
 <script>
+    //导航菜单浮动
+    window.onscroll = function(){
+        var el = AccessNode("#menu");
+        var top = (typeof window.pageYOffset != 'undefined'?window.pageYOffset:typeof document.compatMode != 'undefined' && document.compatMode != 'BackCompat'?document.documentElement.scrollTop:typeof document.body != 'undefined'?document.body.scrollTop:"");
+        el.style.background = (ie()>8? "rgba(255,255,255,"+top/55+")":top>55?"#fff":"");
+        if(top >= 55){
+            el.style.position = "fixed";
+            el.style.top = "0px";
+        }else{
+            el.style.position = "";
+            el.style.top = "";
+        }
+    }
+
     var cca = new Worm({el:"#head_right",onclick:function(){console.log(this)}});
-    var app5 = new Vue({
-        el: '#app-5',
-        data: {
-            message: 'Hello Vue.js!'
-        }})
     var ccab = new Worm({
-        el:"#example-3",
+        el:"#poster_bg",
         data:{
-            NAME:"我的",
-            CCDD:"你的w"
-    },
-        onclick:function(){
-            app5.message = "123";
-            ccab.NAME = "wd";
-            ccab.CCDD = "ddd";
+            menu1:"官网首页",
+            menu2:"新闻资讯",
+            menu3:"产品资料",
+            menu4:"合作加盟",
+            menu5:"联系我们",
+            menu6:"关于我们"
         }
     });
 
-    var headRightA = cca.el.getElementsByTagName("a");
+/*    var headRightA = cca.el.getElementsByTagName("a");
     for(var i = 0;i<headRightA.length;i++){
         headRightA[i].onmousemove = function () {
             this.getElementsByTagName("div")[0].style.display = "block";
@@ -85,7 +93,7 @@
         headRightA[i].onmouseout = function () {
             this.getElementsByTagName("div")[0].style.display = "";
         }
-    }
+    }*/
 
 </script>
 </html>
