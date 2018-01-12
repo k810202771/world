@@ -2,39 +2,54 @@
 <html>
 <head lang="zh-CN">
     <meta charset="UTF-8">
-    <title></title>
+    <title>我的标题</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="stylesheet" href="css/style.css"/>
     <link rel="stylesheet" href="icon-font/iconfont.css"/>
     <script src="js/Worm.js"></script>
-    <script>
-        (function(){
-            var element=['header','footer','article','aside','section','nav','menu','details','dialog','figure'],
-                    len=element.length;
-            var i=0;
-            while(i<len){
-                document.createElement(element[i])
-                i++;
-            }
-        })();
-    </script>
 </head>
+<!--[if lte IE 9]>
+<script>
+    (function() {
+        if (!
+                    /*@cc_on!@*/
+                        0) return;
+        var e = "abbr, article, aside, audio, canvas, datalist, details, dialog, eventsource, figure, footer, header, hgroup, mark, menu, meter, nav, output, progress, section, time, video".split(', ');
+        var i= e.length;
+        while (i--){
+            document.createElement(e[i])
+        }
+    })()
+</script>
+<![endif]-->
 <body>
+
+
+
+
+
+
+
+
+
+
+
 <!--页头-->
 <herader id="herader">
     <div id="head_box" class="box">
         <div id="head_left"></div>
         <div id="head_right">
-            <a>&#xe6e6;<div>微博</div></a>
-            <a>&#xe61e;<div>QQ</div></a>
-            <a>&#xe65d;<div>微信</div></a>
-            <a>&#xe652;<div>电话</div></a>
-            <a>&#xe678;<div>旺旺</div></a>
+            <a @mouseover="{{over}}" @mouseout="{{out}}">&#xe6e6;<div>微博</div></a>
+            <a @mouseover="{{over}}" @mouseout="{{out}}">&#xe61e;<div>QQ</div></a>
+            <a @mouseover="{{over}}" @mouseout="{{out}}">&#xe65d;<div>微信</div></a>
+            <a @mouseover="{{over}}" @mouseout="{{out}}">&#xe652;<div>电话</div></a>
+            <a @mouseover="{{over}}" @mouseout="{{out}}">&#xe678;<div>旺旺</div></a>
         </div>
     </div>
 </herader>
 <!--页面内容-->
 <article>
-    <div id="poster_bg">
+    <div id="poster_bg" class="box">{{menu1}}
         <div id="menu" class="box">
             <span>
                 <a>{{menu1}}</a>
@@ -46,7 +61,14 @@
             </span>
         </div>
     </div>
-    <section></section>
+    <div class="box" id="content">
+        <div id="content_left">
+            <div id="posters">
+                {{posters}}
+            </div>
+        </div>
+        <div id="content_right"></div>
+    </div>
     <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 </article>
 
@@ -56,24 +78,41 @@
 
 </footer>
 
+
+
+
+
+
+
+
+
 </body>
 <script>
     //导航菜单浮动
     window.onscroll = function(){
-        var el = AccessNode("#menu");
+        var el = $("#menu");
         var top = (typeof window.pageYOffset != 'undefined'?window.pageYOffset:typeof document.compatMode != 'undefined' && document.compatMode != 'BackCompat'?document.documentElement.scrollTop:typeof document.body != 'undefined'?document.body.scrollTop:"");
         el.style.background = (ie()>8? "rgba(255,255,255,"+top/55+")":top>55?"#fff":"");
         if(top >= 55){
             el.style.position = "fixed";
-            el.style.top = "0px";
         }else{
             el.style.position = "";
-            el.style.top = "";
         }
     }
-
-    var cca = new Worm({el:"#head_right",onclick:function(){console.log(this)}});
-    var ccab = new Worm({
+    //分享按钮
+    var share = new Worm({
+        el:"#head_right",
+        data:{
+            over:function(e){
+                $("div",e).style.display = "block";
+            },
+            out:function(e){
+                $("div",e).style.display = "";
+            },
+        }
+    });
+    //menu菜单导航
+    var menu = new Worm({
         el:"#poster_bg",
         data:{
             menu1:"官网首页",
@@ -85,15 +124,12 @@
         }
     });
 
-/*    var headRightA = cca.el.getElementsByTagName("a");
-    for(var i = 0;i<headRightA.length;i++){
-        headRightA[i].onmousemove = function () {
-            this.getElementsByTagName("div")[0].style.display = "block";
+    //海报
+    var posters = new Worm({
+        el:"#posters",
+        data:{
+            posters:"<a>我是好人</a>"
         }
-        headRightA[i].onmouseout = function () {
-            this.getElementsByTagName("div")[0].style.display = "";
-        }
-    }*/
-
+    });
 </script>
 </html>

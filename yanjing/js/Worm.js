@@ -18,38 +18,62 @@ function DataSet(that) {
     var text=value;
     var el = that.el.getElementsByTagName("*");
     var p = /\{\{(.*?)\}\}/g;
-
     for(var c=0;c<el.length;c++){
         for(var e=0;e<that.sel.length;e++){
             if(el[c] == that.sel[e]){
                 value.html = text.html = that.selhtml[e];
-                value.className = text.className = that.selclass[e];
-                value.id = text.id = that.selid[e];
                 for(var i in that.data){
-                    while ((result = p.exec(text.html)) != null)  {
-                        if(result[1].replace(/\s/g,"") == i){
-                            value.html=value.html.replace(result[0],that.data[i]);
-                        }
-                    }
-                    while ((result = p.exec(text.className)) != null)  {
-                        if(result[1].replace(/\s/g,"") == i){
-                            value.className=value.className.replace(result[0],that.data[i]);
-                        }
-                    }
-                    while ((result = p.exec(text.id)) != null)  {
-                        if(result[1].replace(/\s/g,"") == i){
-                            value.id=value.id.replace(result[0],that.data[i]);
-                        }
-                    }
+                    //静态属性
+                    onEvent("class",that,i,e,"",p,true);
+                    //动态属性
+                    onEvent("@click",that,i,e,"onclick",p,false);
+                    onEvent("@mouseover",that,i,e,"onmouseover",p,false);
+                    onEvent("@mouseout",that,i,e,"onmouseout",p,false);
+                    //内容
+                    value.html = results(i,value.html,text.html,that,p);
                 }
                 if(value.html)el[c].innerHTML = value.html;
-                if(value.className)el[c].className = value.className;
-                if(value.id)el[c].id = value.id;
             }
         }
     }
+    for(var i in that.data) {
+        value.html = text.html = that.HTML;
+        value.html = results(i,value.html,text.html,that,p);
+    }
+    if(value.html)that.el.innerHTML = value.html;
+}
+results = function(i,value,text,that,p){
+    var result;
+    var c = /\<.*\>/g;
+    var t;
+    while((t = c.exec(text)) != null){
+        if(t)text=text.replace(t[0],"&~worm~&");value=text;
+        while ((result = p.exec(text)) != null)  {
+            if(result[1].replace(/\s/g,"") == i){
+                value=value.replace(result[0],that.data[i]);
+            }
+        }
+        value=value.replace("&~worm~&",t);
+    }
 
+    return value;
+};
 
+onEvent = function(text,that,i,e,event,p,quiet){
+    var result;
+    var value = that.sel[e].getAttribute(text);
+    var att=p.exec(value);
+    if(att){result = att[1].replace(/\s/g,"")
+        if(result == i){
+            if(quiet){
+                value=value.replace(att[0],that.data[i]);
+                that.sel[e].setAttribute(text,value);
+            }else{
+                that.sel[e].removeAttribute(text);
+                that.sel[e][event] = function(){that.data[i](this)};
+            }
+        }
+    }
 }
 
 ValueHookAPI = function(that,e,key) {
@@ -62,8 +86,8 @@ ValueHookAPI = function(that,e,key) {
         });
     }
 }
-//AccessNode 文本转节点
-function AccessNode(text,Parent){
+//$ 文本转节点
+function $(text,Parent){
     var h = text.substr(0,1);
     var t = text.substr(1,text.length - 1);
     var pt = (Parent?Parent:document);
@@ -85,24 +109,23 @@ Worm = function (op){
     that = {
         el:"body",
         onclick:null,
+        onmouseover:null,
+        onmouseout:null,
         data:null,
-        OriginalHTML:null,
         sel:[],
         selhtml:[],
-        selclass:[],
-        selid:[]
+        HTML:null
     }
  
     for(var i in op)that[i] = op[i];
 
-    that.el = AccessNode(that.el);
+    that.el = $(that.el);
     this.el = that.el;
-    that.OriginalHTML = that.el.innerHTML;
+
     that.sel = that.el.getElementsByTagName("*");
+    that.HTML = that.el.innerHTML;
     for(var i =0;i<that.sel.length;i++){
         that.selhtml[i] = that.sel[i].innerHTML;
-        that.selclass[i] = that.sel[i].className;
-        that.selid[i] = that.sel[i].id;
     }
 
     for(var data in that.data) {
@@ -117,11 +140,15 @@ Worm = function (op){
         //针对 ID 单个类型
         //按下事件
         that.onclick?that.el.onclick=function(e){that.onclick(e)}:null;
+        that.onmouseover?that.el.onmouseover=function(e){that.onmouseover(e)}:null;
+        that.onmouseout?that.el.onmouseout=function(e){that.onmouseout(e)}:null;
     }else{
         for(var i=0;i<this.el.length;i++){
             //针对 Class or Tag 的单个类型
             //按下事件
             that.onclick?that.el[i].onclick=function(e){that.onclick(e)}:null;
+            that.onmouseover?that.el[i].onmouseover=function(e){that.onmouseover(e)}:null;
+            that.onmouseout?that.el[i].onmouseout=function(e){that.onmouseout(e)}:null;
         }
     }
 }
