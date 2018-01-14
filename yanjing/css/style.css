@@ -1,6 +1,6 @@
 /*html5*/
 article,aside,dialog,footer,header,section,footer,nav,figure,menu{display:block;}
-body,html{margin: 0;width:100%;height: 100%;}
+body,html{margin: 0;width:100%;height: 100%;font: 15px "微软雅黑","黑体"}
 .box{width:100%;max-width: 1200px;min-width: 1000px;margin:0 auto;}
 #herader{text-align: center;height: 55px;}
 #head_box{height: 55px;position: relative;}
@@ -14,7 +14,7 @@ body,html{margin: 0;width:100%;height: 100%;}
 }
 
 #head_right{
-    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=hIEfix.png,sizingMethod=crop);
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=hIEfix.png,sizingMethod=crop);/*ie8平滑图标字体*/
     zoom:1;
     font-family:'iconfont';
     font-size:24px;
@@ -62,19 +62,19 @@ body,html{margin: 0;width:100%;height: 100%;}
     text-align: right;
 }
 #menu>span{
-    font:16px "微软雅黑";
+    font-size:16px;
     padding-right:20px;
 }
 #menu>span>a{
     padding:5px;
 }
-#menu>span>a+a:before{
+#menu>span>a~a:before{
     content:"/";
     margin-right: 10px;
 }
 #content{
     margin-top: 10px;
-    height: 800px;
+    height: 820px;
     position: relative;
 }
 #content_left{
@@ -90,4 +90,62 @@ body,html{margin: 0;width:100%;height: 100%;}
     background: #eeeeee;
     height: 100%;
     width: 350px;
+}
+#content_left > div{
+    white-space:nowrap;
+    overflow: hidden;
+}
+#posters_scroll{
+    width: 400%;
+    font-size: 0;
+}
+#posters_scroll>a{
+    display: block;
+    width: 25%;
+    height: 351px;
+    position: relative;
+}
+#list{
+    list-style-type: none;
+    padding:0;
+    margin: 10px;
+}
+#list > li{
+    border-bottom: 1px dotted #999;
+}
+#list > li a{
+    color: #333333;
+    width: 100%;
+    display: inline-block;
+    text-decoration: none;
+}
+#list > li a span{
+    display: inline-block;
+    height: 24px;
+    line-height: 24px;
+    margin: 5px 0;
+    margin-right: 10px;
+    padding:5px 10px;
+}
+.list_left {
+    background: #fff;
+}
+.list_content{
+    position: absolute;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    left: 70px;
+    right: 120px;
+}
+.list_right{
+    position: absolute;
+    right: 0px;
+    color: #c4d3df;
+}
+#list > li a:hover{
+    color: #c28622;
+}
+#list > li a:hover .list_left{
+    background: #c28622;
+    color: #fff;
 }

@@ -49,7 +49,7 @@
 </herader>
 <!--页面内容-->
 <article>
-    <div id="poster_bg" class="box">{{menu1}}
+    <div id="poster_bg" class="box">
         <div id="menu" class="box">
             <span>
                 <a>{{menu1}}</a>
@@ -63,9 +63,26 @@
     </div>
     <div class="box" id="content">
         <div id="content_left">
-            <div id="posters">
-                {{posters}}
+            <div>
+                <div id="posters_scroll">
+                    {{posters}}
+                </div>
             </div>
+            <div>
+                <ul id="list">
+                    <li>{{list}}</li>
+                    <li>{{list}}</li>
+                    <li>{{list}}</li>
+                    <li>{{list}}</li>
+                    <li>{{list}}</li>
+                    <li>{{list}}</li>
+                    <li>{{list}}</li>
+                    <li>{{list}}</li>
+                    <li>{{list}}</li>
+                    <li>{{list}}</li>
+                </ul>
+            </div>
+
         </div>
         <div id="content_right"></div>
     </div>
@@ -82,17 +99,15 @@
 
 
 
-
-
-
-
 </body>
 <script>
     //导航菜单浮动
     window.onscroll = function(){
         var el = $("#menu");
         var top = (typeof window.pageYOffset != 'undefined'?window.pageYOffset:typeof document.compatMode != 'undefined' && document.compatMode != 'BackCompat'?document.documentElement.scrollTop:typeof document.body != 'undefined'?document.body.scrollTop:"");
-        el.style.background = (ie()>8? "rgba(255,255,255,"+top/55+")":top>55?"#fff":"");
+        if(top/55/2<=0.8){
+            el.style.background = (ie()>8? "rgba(255,255,255,"+top/55/2+")":top>55?"#fff":"");
+        }
         if(top >= 55){
             el.style.position = "fixed";
         }else{
@@ -101,16 +116,19 @@
     }
     //分享按钮
     var share = new Worm({
-        el:"#head_right",
-        data:{
-            over:function(e){
-                $("div",e).style.display = "block";
+        el: "#head_right",
+        data: {
+            menu1:"官网首页",
+            over: function (e) {
+                e.style.color = "#ff0000";
+                $("div", e).style.display = "block";
             },
-            out:function(e){
-                $("div",e).style.display = "";
+            out: function (e) {
+                e.style.color = "";
+                $("div", e).style.display = "";
             },
         }
-    });
+    })
     //menu菜单导航
     var menu = new Worm({
         el:"#poster_bg",
@@ -126,10 +144,17 @@
 
     //海报
     var posters = new Worm({
-        el:"#posters",
+        el:"#posters_scroll",
         data:{
-            posters:"<a>我是好人</a>"
+            posters:"<a href='index.html' style='background: url(\"image/hb1.jpg\") no-repeat 50% 0'></a>"
         }
     });
+
+    var list = new Worm({
+        el:"#list",
+        data:{
+            list:"<a href='index.html'><span class='list_left'>新闻</span><span class='list_content'>脑动脉瘤早期有哪些常见症状 这些征兆不可忽略！脑动脉瘤早期有哪些常见症状 这些征兆不可忽略！</span><span class='list_right'>2018-01-14</span></a>"
+        }
+    })
 </script>
 </html>

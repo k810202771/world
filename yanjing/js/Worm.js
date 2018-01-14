@@ -13,64 +13,94 @@ function ie(){
 }
 
 function DataSet(that) {
-    //data赋值
-    var value={html:"",className:"",id:""};
-    var text=value;
-    var el = that.el.getElementsByTagName("*");
     var p = /\{\{(.*?)\}\}/g;
-    for(var c=0;c<el.length;c++){
-        for(var e=0;e<that.sel.length;e++){
-            if(el[c] == that.sel[e]){
-                value.html = text.html = that.selhtml[e];
-                for(var i in that.data){
-                    //静态属性
-                    onEvent("class",that,i,e,"",p,true);
-                    //动态属性
-                    onEvent("@click",that,i,e,"onclick",p,false);
-                    onEvent("@mouseover",that,i,e,"onmouseover",p,false);
-                    onEvent("@mouseout",that,i,e,"onmouseout",p,false);
-                    //内容
-                    value.html = results(i,value.html,text.html,that,p);
-                }
-                if(value.html)el[c].innerHTML = value.html;
-            }
-        }
-    }
-    for(var i in that.data) {
-        value.html = text.html = that.HTML;
-        value.html = results(i,value.html,text.html,that,p);
-    }
-    if(value.html)that.el.innerHTML = value.html;
-}
-results = function(i,value,text,that,p){
-    var result;
-    var c = /\<.*\>/g;
-    var t;
-    while((t = c.exec(text)) != null){
-        if(t)text=text.replace(t[0],"&~worm~&");value=text;
-        while ((result = p.exec(text)) != null)  {
-            if(result[1].replace(/\s/g,"") == i){
-                value=value.replace(result[0],that.data[i]);
-            }
-        }
-        value=value.replace("&~worm~&",t);
-    }
 
+    if (!that.el.length) {
+        var el = that.el.getElementsByTagName("*");
+        topLevel(that.el,that,p)
+        replace(el,that,p)
+    } else {
+        for(var i=0;i<that.el.length;i++){
+            var el = that.el[i].getElementsByTagName("*");
+            topLevel(that.el[i],that,p)
+            replace(el,that,p)
+        }
+    }
+}
+
+
+function topLevel(el,that,p) {
+    var value = {html: ""};
+    var text = value;
+    value.html = text.html = el.innerHTML;
+    for(var i in that.data) {
+        value.html = results(i,el,value.html,text.html,that,p);
+    }
+    if(value.html)el .innerHTML = value.html;
+}
+
+replace = function (element,that,p) {
+    var value = {html: ""};
+    var text = value;
+    var el = element;
+
+    for(var c=0;c<el.length;c++){
+        value.html = text.html = el[c].innerHTML;
+        for(var i in that.data){
+            //静态属性
+            onEvent("class",that,el[c],i,"",p,true);
+            //动态属性
+            onEvent("@click",that,el[c],i,"onclick",p,false);
+            onEvent("@mouseover",that,el[c],i,"onmouseover",p,false);
+            onEvent("@mouseout",that,el[c],i,"onmouseout",p,false);
+            //内容
+            value.html = results(i,el[c],value.html,text.html,that,p);
+        }
+        if(value.html)el[c].innerHTML = value.html;
+    }
+}
+
+results = function(i,el,value,text,that,p){
+    var result;
+    var t = el.childNodes;
+    var html = text;
+    if(t){
+        for(c=0;c<t.length;c++){
+            if(t[c].nodeName == "#text" && !/\s/.test(t.nodeValue)){
+            }else{
+                html=html.replace(t[c].outerHTML,"&~worm~&"+c);
+            }
+        }
+    }
+    value = text = html;
+    while ((result = p.exec(text)) != null)  {
+        if(result[1].replace(/\s/g,"") == i){
+            value=value.replace(result[0],that.data[i]);
+        }
+    }
+    if(t) {
+        for (c = 0; c < t.length; c++) {
+            if (t[c].nodeName == "#text" && !/\s/.test(t.nodeValue)) {
+            } else {
+                value = value.replace("&~worm~&" + c, t[c].outerHTML);
+            }
+        }
+    }
     return value;
 };
 
-onEvent = function(text,that,i,e,event,p,quiet){
+onEvent = function(text,that,el,i,event,p,quiet){
     var result;
-    var value = that.sel[e].getAttribute(text);
+    var value = el.getAttribute(text);
     var att=p.exec(value);
     if(att){result = att[1].replace(/\s/g,"")
         if(result == i){
             if(quiet){
                 value=value.replace(att[0],that.data[i]);
-                that.sel[e].setAttribute(text,value);
+                el.setAttribute(text,value);
             }else{
-                that.sel[e].removeAttribute(text);
-                that.sel[e][event] = function(){that.data[i](this)};
+                el.removeAttribute(text);
+                el[event] = function(){that.data[i](this)};
             }
         }
     }
@@ -111,10 +141,7 @@ Worm = function (op){
         onclick:null,
         onmouseover:null,
         onmouseout:null,
-        data:null,
-        sel:[],
-        selhtml:[],
-        HTML:null
+        data:null
     }
  
     for(var i in op)that[i] = op[i];
@@ -122,11 +149,6 @@ Worm = function (op){
     that.el = $(that.el);
     this.el = that.el;
 
-    that.sel = that.el.getElementsByTagName("*");
-    that.HTML = that.el.innerHTML;
-    for(var i =0;i<that.sel.length;i++){
-        that.selhtml[i] = that.sel[i].innerHTML;
-    }
 
     for(var data in that.data) {
         new ValueHookAPI(that,this,data)
