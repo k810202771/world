@@ -14,11 +14,7 @@ body,html{margin: 0;width:100%;height: 100%;font: 15px "微软雅黑","黑体"}
 }
 
 #head_right{
-    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=hIEfix.png,sizingMethod=crop);/*ie8平滑图标字体*/
-    zoom:1;
-    font-family:'iconfont';
     font-size:24px;
-    line-height: 55px;
     right: 20px;
     text-align: center;
     position: absolute;
@@ -98,9 +94,11 @@ body,html{margin: 0;width:100%;height: 100%;font: 15px "微软雅黑","黑体"}
 #posters_scroll{
     width: 400%;
     font-size: 0;
+    transition:margin-left 2s;
+    margin-left: 0px;
 }
 #posters_scroll>a{
-    display: block;
+    display: inline-block;
     width: 25%;
     height: 351px;
     position: relative;

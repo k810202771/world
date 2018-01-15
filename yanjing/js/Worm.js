@@ -13,6 +13,10 @@ function ie(){
 }
 
 function DataSet(that) {
+    that.el.innerHTML = that.ElHtml;
+    for(var i in that.SATT){
+        that.el.setAttribute(that.SATT[i],that.elSATT[i]);
+    }
     var p = /\{\{(.*?)\}\}/g;
 
     if (!that.el.length) {
@@ -28,11 +32,15 @@ function DataSet(that) {
     }
 }
 
-
 function topLevel(el,that,p) {
     var value = {html: ""};
     var text = value;
     value.html = text.html = el.innerHTML;
+    for(var s=0;s<that.SATT.length;s++) {
+        for(var i in that.data) {
+            onEvent(that.SATT[s],that,el,i,"",p,true);
+        }
+    }
     for(var i in that.data) {
         value.html = results(i,el,value.html,text.html,that,p);
     }
@@ -43,16 +51,20 @@ replace = function (element,that,p) {
     var value = {html: ""};
     var text = value;
     var el = element;
+    //静态属性
+    var SATT = that.SATT;
+    //动态属性
+    var DATT = that.DATT;
 
     for(var c=0;c<el.length;c++){
         value.html = text.html = el[c].innerHTML;
         for(var i in that.data){
-            //静态属性
-            onEvent("class",that,el[c],i,"",p,true);
-            //动态属性
-            onEvent("@click",that,el[c],i,"onclick",p,false);
-            onEvent("@mouseover",that,el[c],i,"onmouseover",p,false);
-            onEvent("@mouseout",that,el[c],i,"onmouseout",p,false);
+            for(var s=0;s<SATT.length;s++){
+                onEvent(SATT[s],that,el[c],i,"",p,true);
+            }
+            for(var d=0;d<DATT.length;d++){
+                onEvent("@"+DATT[d],that,el[c],i,"on"+DATT[d],p,false);
+            }
             //内容
             value.html = results(i,el[c],value.html,text.html,that,p);
         }
@@ -105,7 +117,10 @@ onEvent = function(text,that,el,i,event,p,quiet){
         }
     }
 }
-
+IeValueHookAPI =function(I,att,value){
+    I.data[att] = value;
+    DataSet(I);
+}
 ValueHookAPI = function(that,e,key) {
     if(ie()>8){
         Object.defineProperty(e,key,{
@@ -141,15 +156,22 @@ Worm = function (op){
         onclick:null,
         onmouseover:null,
         onmouseout:null,
-        data:null
+        data:null,
+        ElHtml:null,
+        SATT:["id","class"],
+        elSATT:[],
+        DATT:["click","mouseover","mouseout"]
     }
  
     for(var i in op)that[i] = op[i];
 
     that.el = $(that.el);
     this.el = that.el;
+    that.ElHtml = that.el.innerHTML;
 
-
+    for(var i in that.SATT){
+        that.elSATT[i] = that.el.getAttribute(that.SATT[i]);
+    }
     for(var data in that.data) {
         new ValueHookAPI(that,this,data)
     }
@@ -173,5 +195,6 @@ Worm = function (op){
             that.onmouseout?that.el[i].onmouseout=function(e){that.onmouseout(e)}:null;
         }
     }
+    for(var i in that)this[i] = that[i];
 }
 

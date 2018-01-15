@@ -38,7 +38,7 @@
 <herader id="herader">
     <div id="head_box" class="box">
         <div id="head_left"></div>
-        <div id="head_right">
+        <div id="head_right" class="iconfont">
             <a @mouseover="{{over}}" @mouseout="{{out}}">&#xe6e6;<div>微博</div></a>
             <a @mouseover="{{over}}" @mouseout="{{out}}">&#xe61e;<div>QQ</div></a>
             <a @mouseover="{{over}}" @mouseout="{{out}}">&#xe65d;<div>微信</div></a>
@@ -49,8 +49,8 @@
 </herader>
 <!--页面内容-->
 <article>
-    <div id="poster_bg" class="box">
-        <div id="menu" class="box">
+    <div id="poster_bg" class="box {{menu1}}">
+        <div id="menu" class="box {{menu1}}">
             <span>
                 <a>{{menu1}}</a>
                 <a>{{menu2}}</a>
@@ -105,9 +105,10 @@
     window.onscroll = function(){
         var el = $("#menu");
         var top = (typeof window.pageYOffset != 'undefined'?window.pageYOffset:typeof document.compatMode != 'undefined' && document.compatMode != 'BackCompat'?document.documentElement.scrollTop:typeof document.body != 'undefined'?document.body.scrollTop:"");
-        if(top/55/2<=0.8){
-            el.style.background = (ie()>8? "rgba(255,255,255,"+top/55/2+")":top>55?"#fff":"");
-        }
+
+        //filter: progid:DXImageTransform.Microsoft.Gradient(startColorstr=#44000000,endColorstr=#44000000);
+        el.style.background = (ie()>8?top/55/2<=0.8?"rgba(255,255,255,"+top/55/2+")":"rgba(255,255,255,0.8)":top>55?"#fff":"");
+
         if(top >= 55){
             el.style.position = "fixed";
         }else{
@@ -139,6 +140,10 @@
             menu4:"合作加盟",
             menu5:"联系我们",
             menu6:"关于我们"
+        },onclick:function(){
+            IeValueHookAPI(menu,"menu1","haha")
+            menu.menu1 = "haha";
+            document.getElementById("posters_scroll").style.marginLeft = "-100%";
         }
     });
 
@@ -146,7 +151,7 @@
     var posters = new Worm({
         el:"#posters_scroll",
         data:{
-            posters:"<a href='index.html' style='background: url(\"image/hb1.jpg\") no-repeat 50% 0'></a>"
+            posters:"<a href='index.html' style='background: url(\"image/hb1.jpg\") no-repeat 50% 0'></a><a href='index.html' style='background: url(\"image/hb1.jpg\") no-repeat 50% 0'></a>"
         }
     });
 

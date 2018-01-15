@@ -8,3 +8,7 @@
   font-weight: normal;
   font-style: normal;
 }
+[class~=iconfont]{
+  font-family:'iconfont';
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=hIEfix.png,sizingMethod=crop);/*ie8Æ½»¬Í¼±ê×ÖÌå*/
+}
