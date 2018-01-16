@@ -13,21 +13,42 @@ function ie(){
 }
 
 function DataSet(that) {
-    that.el.innerHTML = that.ElHtml;
-    for(var i in that.SATT){
-        that.el.setAttribute(that.SATT[i],that.elSATT[i]);
-    }
     var p = /\{\{(.*?)\}\}/g;
-
     if (!that.el.length) {
         var el = that.el.getElementsByTagName("*");
-        topLevel(that.el,that,p)
-        replace(el,that,p)
+        for(var s in that.SATT){
+            that.elSATT[s]?that.el.setAttribute(that.SATT[s],that.elSATT[s]):null;
+        }
+        for(var b=0;b<el.length;b++){
+            for(var s in that.SATT){
+                that.selSATT[b][s]?el[b].setAttribute(that.SATT[s],that.selSATT[b][s]):null;
+            }
+        }
+        for(var c=0;c<that.sel.length;c++){
+            el[c].innerHTML = that.sel[c].innerHTML;
+        }
+        topLevel(that.el,that,p);
+        replace(el,that,p);
     } else {
-        for(var i=0;i<that.el.length;i++){
+        for(var i=0;i<that.el.length;i++) {
+            for(var s in that.SATT){
+                that.elSATT[i][s]?that.el[i].setAttribute(that.SATT[s],that.elSATT[i][s]):null;
+            }
             var el = that.el[i].getElementsByTagName("*");
-            topLevel(that.el[i],that,p)
-            replace(el,that,p)
+            for(var b=0;b<el.length;b++){
+                for(var s in that.SATT){
+                    that.selSATT[i][b][s]?el[b].setAttribute(that.SATT[s],that.selSATT[i][b][s]):null;
+                }
+            }
+            for(var e=0;e<that.sel.length;e++){
+                if(that.sel[e] == el){
+                    for(var b=0;b<that.sel[i].length;b++){
+                        el[b].innerHTML = that.sel[i][b].innerHTML
+                    }
+                }
+            }
+            topLevel(that.el[i],that,p);
+            replace(el,that,p);
         }
     }
 }
@@ -46,7 +67,6 @@ function topLevel(el,that,p) {
     }
     if(value.html)el .innerHTML = value.html;
 }
-
 replace = function (element,that,p) {
     var value = {html: ""};
     var text = value;
@@ -71,7 +91,6 @@ replace = function (element,that,p) {
         if(value.html)el[c].innerHTML = value.html;
     }
 }
-
 results = function(i,el,value,text,that,p){
     var result;
     var t = el.childNodes;
@@ -100,7 +119,6 @@ results = function(i,el,value,text,that,p){
     }
     return value;
 };
-
 onEvent = function(text,that,el,i,event,p,quiet){
     var result;
     var value = el.getAttribute(text);
@@ -132,11 +150,12 @@ ValueHookAPI = function(that,e,key) {
     }
 }
 //$ 文本转节点
-function $(text,Parent){
+function $(text,Parent,judge){
     var h = text.substr(0,1);
     var t = text.substr(1,text.length - 1);
     var pt = (Parent?Parent:document);
     var el;
+    var a=[];
     switch(h){
         case "#":
             el = pt.getElementById(t);
@@ -146,6 +165,11 @@ function $(text,Parent){
             break;
     }
     if(!el)el = pt.getElementsByTagName(text);
+    if(judge){
+        a[0] = (!el.length?el:el.length==1?el[0]:null);
+        if(!a[0]){a=el};
+        return a;
+    }
     return (!el.length?el:el.length==1?el[0]:el);
 }
 
@@ -153,13 +177,12 @@ Worm = function (op){
     var that = this;
     that = {
         el:"body",
-        onclick:null,
-        onmouseover:null,
-        onmouseout:null,
         data:null,
         ElHtml:null,
-        SATT:["id","class"],
+        sel:[],
         elSATT:[],
+        selSATT:[],
+        SATT:["id","class"],
         DATT:["click","mouseover","mouseout"]
     }
  
@@ -168,10 +191,41 @@ Worm = function (op){
     that.el = $(that.el);
     this.el = that.el;
     that.ElHtml = that.el.innerHTML;
+    if (!that.el.length) {
+        for(var s in that.SATT) {
+            that.elSATT[s] = that.el.getAttribute(that.SATT[s]);
+        }
+        var el = that.el.getElementsByTagName("*");
+        for(var i=0;i<el.length;i++){
+            that.sel[i] = el[i];
+            //
+            that.selSATT[i] = [];
+            for(var s in that.SATT){
+                that.selSATT[i][s] = el[i].getAttribute(that.SATT[s]);
+            }
+        }
+    }else{
+        for(var e=0;e<that.el.length;e++){
+            that.sel[e] = [];
+            that.selSATT[e] = [];
+            that.elSATT[e] = [];
+            var el = that.el[e].getElementsByTagName("*");
+            for(var s in that.SATT) {
+                that.elSATT[e][s] = that.el[e].getAttribute(that.SATT[s]);
+            }
+            for(var i=0;i<el.length;i++){
+                that.sel[e][i] = el[i];
+            }
 
-    for(var i in that.SATT){
-        that.elSATT[i] = that.el.getAttribute(that.SATT[i]);
+            for(var v=0;v<el.length;v++){
+                that.selSATT[e][v] = [];
+                for(var i in that.SATT){
+                    that.selSATT[e][v][i] = el[v].getAttribute(that.SATT[i]);
+                }
+            }
+        }
     }
+
     for(var data in that.data) {
         new ValueHookAPI(that,this,data)
     }
@@ -180,12 +234,14 @@ Worm = function (op){
     DataSet(that);
 
     //执行事件
+
     if(!that.el.length){
         //针对 ID 单个类型
         //按下事件
         that.onclick?that.el.onclick=function(e){that.onclick(e)}:null;
         that.onmouseover?that.el.onmouseover=function(e){that.onmouseover(e)}:null;
         that.onmouseout?that.el.onmouseout=function(e){that.onmouseout(e)}:null;
+        that.load?that.el.load=that.load():null;
     }else{
         for(var i=0;i<this.el.length;i++){
             //针对 Class or Tag 的单个类型
@@ -193,6 +249,7 @@ Worm = function (op){
             that.onclick?that.el[i].onclick=function(e){that.onclick(e)}:null;
             that.onmouseover?that.el[i].onmouseover=function(e){that.onmouseover(e)}:null;
             that.onmouseout?that.el[i].onmouseout=function(e){that.onmouseout(e)}:null;
+            that.load?that.el[i].load=that.load():null;
         }
     }
     for(var i in that)this[i] = that[i];
