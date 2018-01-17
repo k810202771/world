@@ -87,7 +87,7 @@ body,html{margin: 0;width:100%;height: 100%;font: 15px "微软雅黑","黑体"}
     height: 100%;
     width: 350px;
 }
-#content_right > div{
+#content_right > .head{
     position:absolute;
     background: url("../image/right_head.png");
     width: 504px;
@@ -95,6 +95,24 @@ body,html{margin: 0;width:100%;height: 100%;font: 15px "微软雅黑","黑体"}
     top:-185px;
     left: -154px;
 }
+#content_right > .content{
+    position: absolute;
+    left: 29px;
+    right: 19px;
+    top: 5px;
+    bottom: 10px;
+    overflow: auto;
+    background: #fff;
+}
+#content_right > .content ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+#content_right > .content ul li{
+    margin-bottom:15px;
+}
+#content_right > .content ul li img {width: 10px;}
 #content_left > div{
     white-space:nowrap;
     overflow: hidden;
@@ -102,7 +120,7 @@ body,html{margin: 0;width:100%;height: 100%;font: 15px "微软雅黑","黑体"}
 #posters_scroll{
     width: 400%;
     font-size: 0;
-    transition:margin-left 1s;
+    transition:margin-left 0.3s;
     margin-left: 0px;
 }
 #posters_scroll>a{
@@ -170,7 +188,7 @@ body,html{margin: 0;width:100%;height: 100%;font: 15px "微软雅黑","黑体"}
     right: 0px;
     color: #c4d3df;
 }
- 
+
 .first{
     position: relative;
 }
@@ -178,12 +196,20 @@ body,html{margin: 0;width:100%;height: 100%;font: 15px "微软雅黑","黑体"}
     padding:0;
     height: 124px;
     width: 200px;
+    background-size: 100%;
+    background-position: center;
+    transition: background-size 0.5s;
+}
+#content_left .list .first:hover .list_left{
+    background-position: center;
+    background-size: 120%;
 }
 
 .list_content h1{
     overflow: hidden;
     text-overflow: ellipsis;
     margin: 0px;
+    font-size: 22px;
 }
 #content_left .list .first .list_content{
     left: 210px;

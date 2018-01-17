@@ -1,5 +1,37 @@
 /*
 * */
+//Ajax
+function loadXMLDoc(url,type,func)
+{
+    var xmlhttp=null;
+    if (window.XMLHttpRequest)
+    {// code for IE7, Firefox, Opera, etc.
+        xmlhttp=new XMLHttpRequest();
+    }
+    else if (window.ActiveXObject)
+    {// code for IE6, IE5
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    if (xmlhttp!=null)
+    {
+
+        xmlhttp.onreadystatechange=function()
+        {
+            if (xmlhttp.readyState==4 && xmlhttp.status==200)
+            {
+                func(xmlhttp.responseText);
+            }
+        }
+
+        xmlhttp.open(type,url,true);
+        xmlhttp.send(null);
+    }
+    else
+    {
+        alert("您的浏览器不支持AJAX请更换浏览器！");
+    }
+}
+
 /*检测IE7/IE8*/
 function ie(){
     if(navigator.appName == "Microsoft Internet Explorer" && navigator.appVersion .split(";")[1].replace(/[ ]/g,"")=="MSIE7.0")
@@ -11,21 +43,39 @@ function ie(){
     }
     return 9;
 }
+//解决IE8之类不支持getElementsByClassName
+if (!document.getElementsByClassName) {
+    document.getElementsByClassName = function (className, element) {
+        var children = (element || document).getElementsByTagName('*');
+        var elements = new Array();
+        for (var i = 0; i < children.length; i++) {
+            var child = children[i];
+            var classNames = child.className.split(' ');
+            for (var j = 0; j < classNames.length; j++) {
+                if (classNames[j] == className) {
+                    elements.push(child);
+                    break;
+                }
+            }
+        }
+        return elements;
+    };
+}
 
 function DataSet(that) {
     var p = /\{\{(.*?)\}\}/g;
     if (!that.el.length) {
-        var el = that.el.getElementsByTagName("*");
         for(var s in that.SATT){
             that.elSATT[s]?that.el.setAttribute(that.SATT[s],that.elSATT[s]):null;
         }
+        var el = that.el.getElementsByTagName("*");
         for(var b=0;b<el.length;b++){
             for(var s in that.SATT){
                 that.selSATT[b][s]?el[b].setAttribute(that.SATT[s],that.selSATT[b][s]):null;
             }
         }
         for(var c=0;c<that.sel.length;c++){
-            el[c].innerHTML = that.sel[c].innerHTML;
+            if(that.sel[c].innerHTML)el[c].innerHTML = that.sel[c].innerHTML;
         }
         topLevel(that.el,that,p);
         replace(el,that,p);
@@ -43,7 +93,7 @@ function DataSet(that) {
             for(var e=0;e<that.sel.length;e++){
                 if(that.sel[e] == el){
                     for(var b=0;b<that.sel[i].length;b++){
-                        el[b].innerHTML = that.sel[i][b].innerHTML
+                        if(that.sel[i][b].innerHTML)el[b].innerHTML = that.sel[i][b].innerHTML;
                     }
                 }
             }

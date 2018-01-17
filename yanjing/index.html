@@ -77,7 +77,12 @@
 
         </div>
         <div id="content_right">
-            <div></div>
+            <div class="head"></div>
+            <div class="content">
+                <ul>
+                    {{list}}
+                </ul>
+            </div>
         </div>
     </div>
     <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
@@ -119,7 +124,7 @@
             out: function (e) {
                 e.style.color = "";
                 $("div", e).style.display = "";
-            },
+            }
         }
     })
 
@@ -137,43 +142,77 @@
     });
 
     //海报
-    var postersJSON='[{"url":"index.html","img":"image/hb1.jpg"},{"url":"index.html","img":"image/hb2.jpg"},{"url":"index.html","img":"image/hb3.jpg"}]';
-    function handle(json){
-        var obj=JSON.parse(json),that={p:"",i:""};
-        for(var o=0;o<obj.length;o++){
-            that.p = that.p + "<a href=\""+obj[o].url+"\" style=\"background-image: url('" +obj[o].img+"')\"></a>"
-            that.i = that.i+"<li @click='{{index}}'></li>"
+    AjaxText = function(e){
+        var lunbo;
+        var postersJSON=e;
+        function handlE(json){
+            var obj=JSON.parse(json),that={p:"",i:""};
+            for(var o=0;o<obj.length;o++){
+                that.p = that.p + "<a href=\""+obj[o].url+"\" style=\"background-image: url('" +obj[o].img+"')\"></a>"
+                that.i = that.i+"<li @click='{{indexp}}'></li>"
+            }
+            return that;
         }
-        return that;
-    }
-    var lunbo;
-    var posters = new Worm({
-        el:"#posters",
-        data:{
-            posters:handle(postersJSON).p,
-            indexs:handle(postersJSON).i
-        },load:function(){
-            lunbo = new poster(2000,0,{f:$("#posters_scroll"),z:"a"},{f:$("#Pindex"),z:"li"})
-        }
-    });
-    var posters = new Worm({
-        el:"#Pindex",
-        data:{
-            index:function(e){
-                var el = $("li",e.parentNode);
-                for(var i=0;i<el.length;i++){
-                    if(el[i]==e)lunbo.index(i);
+        var posters = new Worm({
+            el:"#posters",
+            data:{
+                posters:handlE(postersJSON).p,
+                indexs:handlE(postersJSON).i
+            },load:function(){
+                lunbo = new poster(2000,0,{f:$("#posters_scroll"),z:"a"},{f:$("#Pindex"),z:"li"})
+            }
+        });
+
+        new Worm({
+            el:"#Pindex",
+            data:{
+                indexp:function(e){
+                    var el = $("li", e.parentNode);
+                    for(var i=0;i<el.length;i++){
+                        if(el[i]==e)lunbo.index(i);
+                    }
                 }
             }
-        }
-    });
+        })
+    };
+    loadXMLDoc("data/hb.js","get",AjaxText);
 
-    var list = new Worm({
-        el:".list",
-        data:{
-            list:"<li class='first'><a href='index.html'><span class='list_left'> <img src='image/pic-news1.jpg' alt=''/> </span><span class='list_content'><h1>脑动脉瘤早期有哪些常见症状 这些征兆不可忽略！</h1></span><span class='list_right'>2018-01-14</span></a></li><li><a href='index.html'><span class='list_left'>新闻</span><span class='list_content'>脑动脉瘤早期有哪些常见症状 这些征兆不可忽略！脑动脉瘤早期有哪些常见症状 这些征兆不可忽略！</span><span class='list_right'>2018-01-14</span></a></li>"
+    List = function(e){
+        var listJSON=e;
+        function handlE(json){
+            var obj=JSON.parse(json),that="";
+            for(var o=0;o<obj.length;o++){
+                that=that+(o==0?"<li class='first'><a href='"+obj[o].url+"'><span class='list_left' style='background-image: url("+obj[o].img+")'></span><span class='list_content'><h1>"+obj[o].title+"</h1></span><span class='list_right'>"+obj[o].time+"</span></a></li>":"<li><a href='"+obj[o].url+"'><span class='list_left'>"+obj[o].type+"</span><span class='list_content'>"+obj[o].title+"</span><span class='list_right'>"+obj[o].time+"</span></a></li>");
+            }
+            return that;
         }
-    })
+        var list = new Worm({
+            el:".list",
+            data:{
+                list:handlE(listJSON)
+            }
+        })
+    };
+    loadXMLDoc("data/list.js","get",List);
+    //手册
+    manual = function(e){
+        var listJSON=e;
+        function handlE(json){
+            var obj=JSON.parse(json),that="";
+            for(var o=0;o<obj.length;o++){
+                that=that+"<li><table cellpadding='0' rules='all'><tr><td><img src='"+obj[o].img+"' /></td></tr><tr><td>"+obj[o].title+"</tr></td><tr><td>"+obj[o].text+"</tr></td></table></li>";
+            }
+            return that;
+        }
+        new Worm({
+            el:"#content_right",
+            data:{
+                list:handlE(listJSON)
+            }
+        })
+    };
+    loadXMLDoc("data/text.js","get",manual);
+
     //多屏滚动
     function poster(time,index,el,sel,gd){
         var posternb = $(el.z,el.f);
