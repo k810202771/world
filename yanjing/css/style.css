@@ -112,7 +112,7 @@ body,html{margin: 0;width:100%;height: 100%;font: 15px "微软雅黑","黑体"}
 #content_right > .content ul li{
     margin-bottom:15px;
 }
-#content_right > .content ul li img {width: 10px;}
+#content_right > .content ul li img {width: 100%;}
 #content_left > div{
     white-space:nowrap;
     overflow: hidden;

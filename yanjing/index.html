@@ -200,7 +200,7 @@
         function handlE(json){
             var obj=JSON.parse(json),that="";
             for(var o=0;o<obj.length;o++){
-                that=that+"<li><table cellpadding='0' rules='all'><tr><td><img src='"+obj[o].img+"' /></td></tr><tr><td>"+obj[o].title+"</tr></td><tr><td>"+obj[o].text+"</tr></td></table></li>";
+                that=that+"<li><table cellpadding='0' rules='all'><tr><td>"+obj[o].title+"</tr></td><tr><td>"+obj[o].text+"</tr></td><tr><td><img src='"+obj[o].img+"' /></td></tr></table></li>";
             }
             return that;
         }
