@@ -77,7 +77,7 @@
 
         </div>
         <div id="content_right">
-            <div class="head"></div>
+            <div class="head">{{img_url}}</div>
             <div class="content">
                 <ul>
                     {{list}}
@@ -172,6 +172,8 @@
                         if(el[i]==e)lunbo.index(i);
                     }
                 }
+            },onclick:function(){
+
             }
         })
     };
@@ -182,7 +184,7 @@
         function handlE(json){
             var obj=JSON.parse(json),that="";
             for(var o=0;o<obj.length;o++){
-                that=that+(o==0?"<li class='first'><a href='"+obj[o].url+"'><span class='list_left' style='background-image: url("+obj[o].img+")'></span><span class='list_content'><h1>"+obj[o].title+"</h1></span><span class='list_right'>"+obj[o].time+"</span></a></li>":"<li><a href='"+obj[o].url+"'><span class='list_left'>"+obj[o].type+"</span><span class='list_content'>"+obj[o].title+"</span><span class='list_right'>"+obj[o].time+"</span></a></li>");
+                that=that+(o==0?"<li class='first'><a href='"+obj[o].url+"'><span class='list_left' style='background-image: url("+obj[o].img+")'></span><span class='list_content'><h1>"+obj[o].title+"</h1></span><span class='list_right v-title'>"+obj[o].time+"</span></a></li>":"<li><a href='"+obj[o].url+"'><span class='list_left'>"+obj[o].type+"</span><span class='list_content'>"+obj[o].title+"</span><span class='list_right v-title'>"+obj[o].time+"</span></a></li>");
             }
             return that;
         }
@@ -198,16 +200,25 @@
     manual = function(e){
         var listJSON=e;
         function handlE(json){
-            var obj=JSON.parse(json),that="";
+            var obj=JSON.parse(json),that="",img="",div="",eimg="",id,tail;
             for(var o=0;o<obj.length;o++){
-                that=that+"<li><table cellpadding='0' rules='all'><tr><td>"+obj[o].title+"</tr></td><tr><td>"+obj[o].text+"</tr></td><tr><td><img src='"+obj[o].img+"' /></td></tr></table></li>";
+                eimg="";
+                id=obj[o].img.length;
+                for(var i in obj[o].img){
+                    tail=(i==id-1?"class='tail'":"");
+                    eimg=eimg+"<div "+tail+" ><img src='"+obj[o].img[i]+"' /></div>";
+                }
+                img=(obj[o].img?"<div class='c-img c-img"+id+"' >"+eimg+"</div>":"");
+                div="<div class='H-title'>"+obj[o].title+"</div><div class='v-title'>"+obj[o].text+"</div>" + img;
+                that=that+"<li><a href='"+obj[o].url+"' target='_blank'>"+div+"</a></li>";
             }
             return that;
         }
         new Worm({
             el:"#content_right",
             data:{
-                list:handlE(listJSON)
+                list:handlE(listJSON),
+                img_url:"<img src=\"image/QRcode.jpg\" title=\"扫一扫手机访问！\"/>"
             }
         })
     };

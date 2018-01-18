@@ -232,9 +232,9 @@ Worm = function (op){
         sel:[],
         elSATT:[],
         selSATT:[],
-        SATT:["id","class"],
+        SATT:["id","class","src"],
         DATT:["click","mouseover","mouseout"]
-    }
+    };
  
     for(var i in op)that[i] = op[i];
 
