@@ -79,6 +79,7 @@ a{text-decoration: none}
     left: 5px;
     right: 365px;
     height: 100%;
+    overflow: hidden;
 }
 #content_right{
     background: url("../image/right_bg.jpg");
@@ -124,14 +125,9 @@ a{text-decoration: none}
     height: 90px;
 }
 #content_right > .content .c-img{
-    width: 100%;
-    height: 50px;
-}
-#content_right > .content .c-img img{
-    width: 100%;
-    height: 100%;
-    transition: height 0.3s;
-}
+     width: 100%;
+     height: 50px;
+ }
 #content_right > .content .c-img div:hover img{
     position: absolute;
     z-index: 30;
@@ -148,19 +144,24 @@ a{text-decoration: none}
     height: 100%;
     width: 100%;
 }
-#content_right > .content .c-img2 div{
+#content_right .content .c-img2 div{
     width: calc( (100% - 5px)  / 2);
     padding-right: 5px;
 }
-#content_right > .content .c-img2 .tail{
+#content_right .content .c-img2 .tail{
     padding-right: 0px;
 }
-#content_right > .content .c-img3 div{
+#content_right .content .c-img3 div{
     width: calc( (100% - 10px)  / 3);
     padding-right: 5px;
 }
 #content_right > .content .c-img3 .tail{
     padding-right: 0px;
+}
+#content_right > .content .c-img img{
+    width: 100%;
+    height: 100%;
+    transition: height 0.3s;
 }
 
 #content_right > .content ul{
@@ -217,15 +218,34 @@ a{text-decoration: none}
     list-style-type: none;
     padding:0;
 }
-#content_left .list > li{
+#content_left .list .caption{
+    height: 45px;
+    line-height: 45px;
+    font-size: 18px;
+    color: #666666;
+ }
+#content_left .list .caption a{
+    width: 25%;
+    display: inline-block;
+    border-bottom:3px solid #eeeeee;
+}
+#content_left .list .caption a+a{
+    text-align: center;
+}
+#content_left .list .content{
+    position: relative;
+    width: 100%;
+    height: 394px;
+}
+#content_left .list  li{
     border-bottom: 1px dotted #999;
 }
-#content_left .list > li a{
+#content_left .list  li a{
     color: #333333;
     width: 100%;
     display: inline-block;
 }
-.list > li a span{
+.list li a span{
     display: inline-block;
     height: 24px;
     line-height: 24px;
@@ -278,10 +298,10 @@ a{text-decoration: none}
     top: 32px;
     left: 210px;
 }
-#content_left .list > li a:hover{
+#content_left .list li a:hover{
     color: #c28622;
 }
-#content_left .list > li a:hover .list_left{
+#content_left .list li a:hover .list_left{
     background: #c28622;
     color: #fff;
 }

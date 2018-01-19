@@ -71,7 +71,10 @@
             </div>
             <div>
                 <ul class="list">
-                    {{list}}
+                    <div>
+                        <div class="caption">{{menu}}</div>
+                        <div class="content">{{list}}</div>
+                    </div>
                 </ul>
             </div>
 
@@ -191,6 +194,7 @@
         var list = new Worm({
             el:".list",
             data:{
+                menu:"<a>最新资讯</a><a>综合新闻</a><a>养生咨询</a><a>企业新闻</a>",
                 list:handlE(listJSON)
             }
         })
