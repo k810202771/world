@@ -3,7 +3,7 @@
 <head lang="zh-CN">
     <meta charset="UTF-8">
     <title>我的标题</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="X-UA-Compatible" content="webkit,IE=edge" />
     <link rel="stylesheet" href="css/style.css"/>
     <link rel="stylesheet" href="icon-font/iconfont.css"/>
     <script src="js/Worm.js"></script>
@@ -77,7 +77,6 @@
                     </div>
                 </ul>
             </div>
-
         </div>
         <div id="content_right">
             <div class="head">{{img_url}}</div>
@@ -88,13 +87,27 @@
             </div>
         </div>
     </div>
-    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <div class="c_line box">
+        <div class="first"><span>以质量求生存，以诚信求发展</span></div>
+        <hr/>
+        <div class="content">
+            <ul>
+                {{lise}}
+            </ul>
+        </div>
+    </div>
 </article>
 
 
 <!--页尾-->
 <footer>
-
+    <div id="footer">
+        <div class="content box">
+            <img class="logo" src="image/footer_logo.png" alt=""/>
+            <div class="div_left">公司地址:北京市朝阳区双桥东路双会桥南双桥燕京中药饮片厂<br/>版权所有 © 1987-2017 北京市双桥燕京中药饮片厂<br/>京ICP备09043563号</div>
+            <div class="div_right"><a href="http://shiweicao.tmall.com" target="_blank"><img src="image/tmall.png" /></a><a href="http://shiweicao.jd.com" target="_blank"><img src="image/jd.png"/></a></div>
+        </div>
+    </div>
 </footer>
 
 
@@ -121,7 +134,7 @@
         el: "#head_right",
         data: {
             over: function (e) {
-                e.style.color = "#ff0000";
+                e.style.color = "#f24853";
                 $("div", e).style.display = "block";
             },
             out: function (e) {
@@ -129,8 +142,19 @@
                 $("div", e).style.display = "";
             }
         }
-    })
+    });
 
+    var text = [{icon:"&#xe665;",title:"产业",text:"双桥燕京30年<br/>铸造品质传奇"},{icon:"&#xe60a;",title:"产地",text:"地道药材<br/>原产地药材专家"},{icon:"&#xe620;",title:"种植",text:"多个药材基地<br/>源头把控质量"},{icon:"&#xe653;",title:"工艺",text:"加工符合中国药典和<br/>北京市中药炮制规范"},{icon:"&#xe63c;",title:"品质",text:"所有饮片严格检测<br/>执行GMP生产标准"}];
+    var neirong="";
+    for(var i=0;i<text.length;i++){
+        neirong=neirong+"<li><span>"+text[i].icon+"</span><div><span>"+text[i].title+"</span><br/>"+text[i].text+"</div></li>"
+    }
+    var c_line = new Worm({
+        el:".c_line",
+        data:{
+            lise:neirong
+        }
+    })
     //menu菜单导航
     var menu = new Worm({
         el:"#poster_bg",
@@ -151,7 +175,7 @@
         function handlE(json){
             var obj=JSON.parse(json),that={p:"",i:""};
             for(var o=0;o<obj.length;o++){
-                that.p = that.p + "<a href=\""+obj[o].url+"\" style=\"background-image: url('" +obj[o].img+"')\"></a>"
+                that.p = that.p + "<a target='_blank' href=\""+obj[o].url+"\" style=\"background-image: url('" +obj[o].img+"')\"></a>"
                 that.i = that.i+"<li @click='{{indexp}}'></li>"
             }
             return that;
@@ -162,7 +186,7 @@
                 posters:handlE(postersJSON).p,
                 indexs:handlE(postersJSON).i
             },load:function(){
-                lunbo = new poster(2000,0,{f:$("#posters_scroll"),z:"a"},{f:$("#Pindex"),z:"li"})
+                lunbo = new poster(3000,0,{f:$("#posters_scroll"),z:"a"},{f:$("#Pindex"),z:"li"})
             }
         });
 
@@ -187,17 +211,48 @@
         function handlE(json){
             var obj=JSON.parse(json),that="";
             for(var o=0;o<obj.length;o++){
-                that=that+(o==0?"<li class='first'><a href='"+obj[o].url+"'><span class='list_left' style='background-image: url("+obj[o].img+")'></span><span class='list_content'><h1>"+obj[o].title+"</h1></span><span class='list_right v-title'>"+obj[o].time+"</span></a></li>":"<li><a href='"+obj[o].url+"'><span class='list_left'>"+obj[o].type+"</span><span class='list_content'>"+obj[o].title+"</span><span class='list_right v-title'>"+obj[o].time+"</span></a></li>");
+                that=that+"<ul id='"+"list"+o+"'>"
+                for(var i=0;i<obj[o].length;i++){
+                    that=that+(i==0?"<li class='first'><a href='"+obj[o][i].url+"' target='_blank'><span class='list_left' style='background-image: url("+obj[o][i].img+")'></span><span class='list_content'><h1>"+obj[o][i].title+"</h1></span><span class='list_right v-title'>"+obj[o][i].time+"</span></a></li>":"<li><a href='"+obj[o][i].url+"' target='_blank'><span class='list_left'>"+obj[o][i].type+"</span><span class='list_content'>"+obj[o][i].title+"</span><span class='list_right v-title'>"+obj[o][i].time+"</span></a></li>");
+                }
+                that=that+"</ul>"
             }
             return that;
         }
         var list = new Worm({
             el:".list",
             data:{
-                menu:"<a>最新资讯</a><a>综合新闻</a><a>养生咨询</a><a>企业新闻</a>",
+                menu:"<a>最新资讯</a><a @mouseover='{{mouse_p}}'>综合新闻</a><a @mouseover='{{mouse_p}}'>养生资讯</a><a @mouseover='{{mouse_p}}'>企业新闻</a><a @mouseover='{{mouse_p}}'>行业资讯</a>",
                 list:handlE(listJSON)
             }
         })
+        var nei_list = $("ul",$(".content",$(".list")));
+        nei_list[0].style.display = "block";
+        var list_csh = $("a",$(".caption",$(".list")))[1];
+        list_csh.style.color="#e37b63";
+        list_csh.style.borderBottomColor="#e37b63";
+        var mouse_p = new Worm({
+            el:$(".caption",$(".list")),
+            data:{
+                mouse_p:function(e){
+                    var el = $("a",mouse_p.el);
+                    for(var i=0;i<el.length;i++){
+                        if(el[i]==e){
+                            el[i].style.color="#e37b63";
+                            el[i].style.borderBottomColor = "#e37b63";
+                            for(var l=0;l<nei_list.length;l++){
+                                nei_list[l].style.display=(l==i-1?"block":"none");
+                            }
+                        }else{
+                            el[i].style.color="";
+                            el[i].style.borderBottomColor = "";
+                        }
+                    }
+                }
+            }
+        })
+
+
     };
     loadXMLDoc("data/list.js","get",List);
     //手册
@@ -216,6 +271,8 @@
                 div="<div class='H-title'>"+obj[o].title+"</div><div class='v-title'>"+obj[o].text+"</div>" + img;
                 that=that+"<li><a href='"+obj[o].url+"' target='_blank'>"+div+"</a></li>";
             }
+            //查看更多
+            that=that+"<li style='text-align: center'><a href='#' target='_blank'><div class='v-title'>查看更多</div></a></li>";
             return that;
         }
         new Worm({
@@ -239,7 +296,7 @@
             if(e!=null)index=e;
             for(var i=0;i<posternb.length;i++){
                 if(i==index){
-                    node[i].style.background = "#c28622";
+                    node[i].style.background = "#e37b63";
                     el.f.style.marginLeft = "-"+(i*100)+"%";
                 }else{
                     node[i].style.background = "";

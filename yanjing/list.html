@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="icon-font/iconfont.css"/>
+    <script src="js/Worm.js"></script>
+    <style>
+        .content_head{
+            background: url(image/list_head.png) no-repeat;
+            height: 598px;
+            background-position: center;
+        }
+        .content_middle{
+            background: url(image/list_content.png) no-repeat repeat;
+            height: 1000px;
+            background-position: center;
+        }
+        .content_footer{
+            background: url(image/list_footer.png) no-repeat;
+            height: 266px;
+            background-position: center;
+        }
+    </style>
+</head>
+<body>
+<!--页头-->
+<herader id="herader">
+    <div id="head_box" class="box">
+        <div id="head_left"></div>
+        <div id="head_right" class="iconfont">
+            <a @mouseover="{{over}}" @mouseout="{{out}}">&#xe6e6;<div>微博</div></a>
+            <a @mouseover="{{over}}" @mouseout="{{out}}">&#xe61e;<div>QQ</div></a>
+            <a @mouseover="{{over}}" @mouseout="{{out}}">&#xe65d;<div>微信</div></a>
+            <a @mouseover="{{over}}" @mouseout="{{out}}">&#xe652;<div>电话</div></a>
+            <a @mouseover="{{over}}" @mouseout="{{out}}">&#xe678;<div>旺旺</div></a>
+        </div>
+    </div>
+</herader>
+<!--页面内容-->
+<article>
+    <div id="poster_bg" class="box" style="height: 80px">
+        <div id="menu" class="box">
+            <span>
+                <a>{{menu1}}</a>
+                <a>{{menu2}}</a>
+                <a>{{menu3}}</a>
+                <a>{{menu4}}</a>
+                <a>{{menu5}}</a>
+                <a>{{menu6}}</a>
+            </span>
+        </div>
+    </div>
+    <div class="content_head"></div>
+    <div class="content_middle"></div>
+    <div class="content_footer"></div>
+</article>
+
+<!--页尾-->
+<footer>
+    <div id="footer">
+        <div class="content box">
+            <img class="logo" src="image/footer_logo.png" alt=""/>
+            <div class="div_left">公司地址:北京市朝阳区双桥东路双会桥南双桥燕京中药饮片厂<br/>版权所有 © 1987-2017 北京市双桥燕京中药饮片厂<br/>京ICP备09043563号</div>
+            <div class="div_right"><a href="http://shiweicao.tmall.com" target="_blank"><img src="image/tmall.png" /></a><a href="http://shiweicao.jd.com" target="_blank"><img src="image/jd.png"/></a></div>
+        </div>
+    </div>
+</footer>
+
+</body>
+<script>
+    //导航菜单浮动
+    window.onscroll = function(){
+        var el = $("#menu");
+        var top = (typeof window.pageYOffset != 'undefined'?window.pageYOffset:typeof document.compatMode != 'undefined' && document.compatMode != 'BackCompat'?document.documentElement.scrollTop:typeof document.body != 'undefined'?document.body.scrollTop:"");
+        el.style.background = (ie()>8?top/55/2<=0.8?"rgba(255,255,255,"+top/55/2+")":"rgba(255,255,255,0.8)":top>55?"#fff":"");
+
+        if(top >= 55){
+            el.style.position = "fixed";
+        }else{
+            el.style.position = "";
+        }
+    };
+    //分享按钮
+    var share = new Worm({
+        el: "#head_right",
+        data: {
+            over: function (e) {
+                e.style.color = "#f24853";
+                $("div", e).style.display = "block";
+            },
+            out: function (e) {
+                e.style.color = "";
+                $("div", e).style.display = "";
+            }
+        }
+    });
+    //menu菜单导航
+    var menu = new Worm({
+        el:"#poster_bg",
+        data:{
+            menu1:"官网首页",
+            menu2:"新闻资讯",
+            menu3:"产品资料",
+            menu4:"合作加盟",
+            menu5:"联系我们",
+            menu6:"关于我们"
+        }
+    });
+</script>
+</html>

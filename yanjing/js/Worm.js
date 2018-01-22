@@ -235,11 +235,13 @@ Worm = function (op){
         SATT:["id","class","src"],
         DATT:["click","mouseover","mouseout"]
     };
- 
-    for(var i in op)that[i] = op[i];
 
-    that.el = $(that.el);
-    this.el = that.el;
+
+    for(var i in op)that[i] = op[i];
+    if(typeof  that.el == "string"){
+        that.el = $(that.el);
+        this.el = that.el;
+    }
     that.ElHtml = that.el.innerHTML;
     if (!that.el.length) {
         for(var s in that.SATT) {
