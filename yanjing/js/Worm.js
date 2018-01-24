@@ -1,8 +1,7 @@
 /*
 * */
 //Ajax
-function loadXMLDoc(url,type,func)
-{
+function loadXMLDoc(url,type,func){
     var xmlhttp=null;
     if (window.XMLHttpRequest)
     {// code for IE7, Firefox, Opera, etc.
@@ -31,7 +30,6 @@ function loadXMLDoc(url,type,func)
         alert("您的浏览器不支持AJAX请更换浏览器！");
     }
 }
-
 /*检测IE7/IE8*/
 function ie(){
     if(navigator.appName == "Microsoft Internet Explorer" && navigator.appVersion .split(";")[1].replace(/[ ]/g,"")=="MSIE7.0")
@@ -61,7 +59,6 @@ if (!document.getElementsByClassName) {
         return elements;
     };
 }
-
 function DataSet(that) {
     var p = /\{\{(.*?)\}\}/g;
     if (!that.el.length) {
@@ -102,7 +99,6 @@ function DataSet(that) {
         }
     }
 }
-
 function topLevel(el,that,p) {
     var value = {html: ""};
     var text = value;

@@ -11,18 +11,83 @@
             background: url(image/list_head.png) no-repeat;
             height: 36px;
             background-position: center;
-            margin: 30px 0;
+            margin: 48px auto;
         }
         .content_title{
-
+            text-align: center;
+            font-size: 0;
+        }
+        .content_title a{
+            font-size: 16px;
+            display: inline-block;
+            height: 38px;
+            width: 100px;
+            position: relative;
+            overflow: hidden;
+            color: #6b6b6b;
+            cursor: default;
+            border-bottom: 2px solid transparent;
+        }
+        .content_title .index{
+            color: #d2598a;
+            border-color:#d2598a;
+        }
+        .content_title .index:before{
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 43px;
+            height: 14px;
+            width: 14px;
+            background: #d2598a;
+            border-radius: 14px;
         }
         .content_middle{
 
         }
+        .content_middle .list_box{
+            margin: 32px 0 64px 0;
+            padding: 0;
+            list-style-type: none;
+        }
+        .list_box>.list{
+            display: none;
+        }
+        .News{
+            margin: 0 auto;
+            padding: 0;
+            list-style-type: none;
+        }
+        .News li{
+            position: relative;
+            margin: 10px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f2f2f2;
+            cursor: pointer;
+        }
+        .News li:hover .title{
+            color: #e37b63;
+            margin-left: 10px;
+        }
+        .News .title{
+            position: absolute;
+            font-size: 20px;
+            color: #444;
+            transition: margin-left 0.3s;
+        }
+        .News .text{
+            position: absolute;
+            top: 30px;
+            font-size: 14px;
+            color: #7d7d7d;
+        }
+        .News img{
+            width:260px;
+            height:150px;
+            margin:0 20px;
+        }
         .content_footer{
-            background: url(image/list_footer.png) no-repeat;
-            height: 266px;
-            background-position: center;
+
         }
     </style>
 </head>
@@ -54,9 +119,21 @@
             </span>
         </div>
     </div>
-    <div class="content_head"></div>
-    <div class="content_title box">综合新闻养生资讯企业新闻行业资讯</div>
-    <div class="content_middle"></div>
+    <div class="content_head box"></div>
+    <div class="content_title box"><a class="index" @mouseover="{{over}}">综合新闻</a><a @mouseover="{{over}}">养生资讯</a><a @mouseover="{{over}}">企业新闻</a><a @mouseover="{{over}}">行业资讯</a>
+    </div>
+    <hr/>
+
+    <div class="content_middle">
+        <div>
+            <ul class="list_box">
+                <li class="list"><ul class="News box">{{list1}}{{list1}}{{list1}}{{list1}}</ul></li>
+                <li class="list"><ul class="News box">{{list2}}</ul></li>
+                <li class="list"><ul class="News box">{{list3}}</ul></li>
+                <li class="list"><ul class="News box">{{list4}}</ul></li>
+            </ul>
+        </div>
+    </div>
     <div class="content_footer"></div>
 </article>
 
@@ -111,5 +188,46 @@
             menu6:"关于我们"
         }
     });
+
+    new Worm({
+        el:".list_box",
+        data:{
+            list1:"<li><a href=''><img src='' /><span class='title'>01-23 阴阳师助手App新功能“助手键盘”焕新上线！使用赢好礼啊 ！</span><span class='text'>阴阳师助手App新加入了键盘回复功能，多种场景模式，一键个性回复！实现游戏内快捷回复队友，与队友进行实时沟通！</span></li></a>",
+            list2:"<li><a href=''><img src='' /><span class='title'>01-23 阴阳师助手App新功能“助手键盘”焕新上线！使用赢好礼啊 ！</span><span class='text'>阴阳师助手App新加入了键盘回复功能，多种场景模式，一键个性回复！实现游戏内快捷回复队友，与队友进行实时沟通！</span></li></a>",
+            list3:"<li><a href=''><img src='' /><span class='title'>01-23 阴阳师助手App新功能“助手键盘”焕新上线！使用赢好礼啊 ！</span><span class='text'>阴阳师助手App新加入了键盘回复功能，多种场景模式，一键个性回复！实现游戏内快捷回复队友，与队友进行实时沟通！</span></li></a>",
+            list4:"<li><a href=''><img src='' /><span class='title'>01-23 阴阳师助手App新功能“助手键盘”焕新上线！使用赢好礼啊 ！</span><span class='text'>阴阳师助手App新加入了键盘回复功能，多种场景模式，一键个性回复！实现游戏内快捷回复队友，与队友进行实时沟通！</span></li></a>"
+        }
+    })
+    //菜单导航
+    new Worm({
+        el:".content_title",
+        data:{
+            over:function(e){
+                set_list(e)
+            }
+        }
+    });
+    set_list = function(e){
+        var el = $("a",e.parentNode);
+        var list = $(".list",$(".list_box"));
+        var index = 0;
+        for(var i=0;i<el.length;i++){
+            if(el[i] == e){
+                index = i;
+                e.setAttribute("class","index");
+            }else{
+                el[i].removeAttribute("class");
+            }
+        }
+        for(var i=0;i<list.length;i++){
+            if(i == index){
+                list[i].style.display = "block";
+            }else{
+                list[i].style.display = "";
+            }
+        }
+    }
+    set_list($("a",$(".content_title"))[0])
+
 </script>
 </html>
