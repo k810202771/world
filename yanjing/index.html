@@ -204,7 +204,7 @@
             }
         })
     };
-    loadXMLDoc("data/hb.js","get",AjaxText);
+    loadXMLDoc("data/hb.json","get",AjaxText);
 
     List = function(e){
         var listJSON=e;
@@ -254,7 +254,7 @@
 
 
     };
-    loadXMLDoc("data/list.js","get",List);
+    loadXMLDoc("data/list.json","get",List);
     //手册
     manual = function(e){
         var listJSON=e;
@@ -283,7 +283,7 @@
             }
         })
     };
-    loadXMLDoc("data/text.js","get",manual);
+    loadXMLDoc("data/text.json","get",manual);
 
     //多屏滚动
     function poster(time,index,el,sel,gd){

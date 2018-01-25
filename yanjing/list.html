@@ -69,6 +69,11 @@
             color: #e37b63;
             margin-left: 10px;
         }
+        .News a{
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+        }
         .News .title{
             position: absolute;
             font-size: 20px;
@@ -127,7 +132,7 @@
     <div class="content_middle">
         <div>
             <ul class="list_box">
-                <li class="list"><ul class="News box">{{list1}}{{list1}}{{list1}}{{list1}}</ul></li>
+                <li class="list"><ul class="News box">{{list1}}</ul></li>
                 <li class="list"><ul class="News box">{{list2}}</ul></li>
                 <li class="list"><ul class="News box">{{list3}}</ul></li>
                 <li class="list"><ul class="News box">{{list4}}</ul></li>
@@ -190,14 +195,20 @@
     });
     dataJson = function(e){
         var json = JSON.parse(e);
-        console.log(json.list1);
+        var getList = function(jsonObj){
+            var text="";
+            for(var i = 0;i<jsonObj.length;i++){
+                text = text+"<li><a href='"+jsonObj[i].url+"'><img src='"+jsonObj[i].img+"' /><span class='title'>"+jsonObj[i].title+"</span><span class='text'>"+jsonObj[i].text+"</span></li></a>"
+            }
+            return text;
+        };
         new Worm({
             el:".list_box",
             data:{
-                list1:"<li><a href=''><img src='' /><span class='title'></span><span class='text'>阴阳师助手App新加入了键盘回复功能，多种场景模式，一键个性回复！实现游戏内快捷回复队友，与队友进行实时沟通！</span></li></a>",
-                list2:"<li><a href=''><img src='' /><span class='title'>01-23 阴阳师助手App新功能“助手键盘”焕新上线！使用赢好礼啊 ！</span><span class='text'>阴阳师助手App新加入了键盘回复功能，多种场景模式，一键个性回复！实现游戏内快捷回复队友，与队友进行实时沟通！</span></li></a>",
-                list3:"<li><a href=''><img src='' /><span class='title'>01-23 阴阳师助手App新功能“助手键盘”焕新上线！使用赢好礼啊 ！</span><span class='text'>阴阳师助手App新加入了键盘回复功能，多种场景模式，一键个性回复！实现游戏内快捷回复队友，与队友进行实时沟通！</span></li></a>",
-                list4:"<li><a href=''><img src='' /><span class='title'>01-23 阴阳师助手App新功能“助手键盘”焕新上线！使用赢好礼啊 ！</span><span class='text'>阴阳师助手App新加入了键盘回复功能，多种场景模式，一键个性回复！实现游戏内快捷回复队友，与队友进行实时沟通！</span></li></a>"
+                list1:getList(json.list1),
+                list2:getList(json.list2),
+                list3:getList(json.list3),
+                list4:getList(json.list4)
             }
         });
     };
