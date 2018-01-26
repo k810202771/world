@@ -25,7 +25,7 @@
             position: relative;
             overflow: hidden;
             color: #6b6b6b;
-            cursor: default;
+            cursor: pointer;
             border-bottom: 2px solid transparent;
         }
         .content_title .index{
@@ -125,7 +125,7 @@
         </div>
     </div>
     <div class="content_head box"></div>
-    <div class="content_title box"><a class="index" @mouseover="{{over}}">综合新闻</a><a @mouseover="{{over}}">养生资讯</a><a @mouseover="{{over}}">企业新闻</a><a @mouseover="{{over}}">行业资讯</a>
+    <div class="content_title box"><a class="index" @click="{{over}}">综合新闻</a><a @click="{{over}}">养生资讯</a><a @click="{{over}}">企业新闻</a><a @click="{{over}}">行业资讯</a>
     </div>
     <hr/>
 
@@ -154,65 +154,38 @@
 </footer>
 
 </body>
+<script src="js/common.js"></script>
 <script>
-    //导航菜单浮动
-    window.onscroll = function(){
-        var el = $("#menu");
-        var top = (typeof window.pageYOffset != 'undefined'?window.pageYOffset:typeof document.compatMode != 'undefined' && document.compatMode != 'BackCompat'?document.documentElement.scrollTop:typeof document.body != 'undefined'?document.body.scrollTop:"");
-        el.style.background = (ie()>8?top/55/2<=0.8?"rgba(255,255,255,"+top/55/2+")":"rgba(255,255,255,0.8)":top>55?"#fff":"");
-
-        if(top >= 55){
-            el.style.position = "fixed";
-        }else{
-            el.style.position = "";
-        }
-    };
-    //分享按钮
-    var share = new Worm({
-        el: "#head_right",
-        data: {
-            over: function (e) {
-                e.style.color = "#f24853";
-                $("div", e).style.display = "block";
-            },
-            out: function (e) {
-                e.style.color = "";
-                $("div", e).style.display = "";
-            }
-        }
-    });
-    //menu菜单导航
-    var menu = new Worm({
-        el:"#poster_bg",
+    var listp = new Worm({
+        el:".list_box",
         data:{
-            menu1:"官网首页",
-            menu2:"新闻资讯",
-            menu3:"产品资料",
-            menu4:"合作加盟",
-            menu5:"联系我们",
-            menu6:"关于我们"
+            list1:"正在加载……",
+            list2:"正在加载……",
+            list3:"正在加载……",
+            list4:"正在加载……"
         }
     });
-    dataJson = function(e){
+    //列表加载
+    var listel = $(".list",listp.el);
+    var dataJson=[];
+    dataJson[0] = function(e){dJson(e,0)};
+    dataJson[1] = function(e){dJson(e,1)};
+    dataJson[2] = function(e){dJson(e,2)};
+    dataJson[3] = function(e){dJson(e,3)};
+    dJson = function(e,p){
         var json = JSON.parse(e);
         var getList = function(jsonObj){
             var text="";
             for(var i = 0;i<jsonObj.length;i++){
-                text = text+"<li><a href='"+jsonObj[i].url+"'><img src='"+jsonObj[i].img+"' /><span class='title'>"+jsonObj[i].title+"</span><span class='text'>"+jsonObj[i].text+"</span></li></a>"
+                text = text+"<li><a target='_blank' href='article.html?type="+json.type+"&uid="+jsonObj[i].Uid+"&id="+jsonObj[i].id+"'><img src='"+jsonObj[i].img[0]+"' /><span class='title'>"+jsonObj[i].title+"</span><span class='text'>"+jsonObj[i].subTitle+"</span></li></a>"
             }
             return text;
         };
-        new Worm({
-            el:".list_box",
-            data:{
-                list1:getList(json.list1),
-                list2:getList(json.list2),
-                list3:getList(json.list3),
-                list4:getList(json.list4)
-            }
-        });
-    };
-    loadXMLDoc("data/detailedList.json","get",dataJson);
+        $("ul",listel[p]).innerHTML = getList(json.text);
+    }
+    for(var i=0;i<listel.length;i++) {
+        loadXMLDoc("post.php?page=1&type="+i,"get",dataJson[i]);
+    }
 
     //菜单导航
     new Worm({
@@ -230,6 +203,7 @@
         for(var i=0;i<el.length;i++){
             if(el[i] == e){
                 index = i;
+                document.title = getTitle(i," 《食味草》双桥燕京中药饮片厂 - 食百味仙草，享健康人生。");
                 e.setAttribute("class","index");
             }else{
                 el[i].removeAttribute("class");
@@ -242,8 +216,9 @@
                 list[i].style.display = "";
             }
         }
-    }
-    set_list($("a",$(".content_title"))[0])
-
+    };
+    var list_index=0;
+    if(getURL("type"))list_index=getURL("type");
+    set_list($("a",$(".content_title"))[list_index]);
 </script>
 </html>

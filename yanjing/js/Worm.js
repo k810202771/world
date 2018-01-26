@@ -1,5 +1,31 @@
 /*
 * */
+//兼容所有浏览器的top
+windostop = function(tTop){
+    if(tTop>=0)window.scroll(0,tTop);
+    var top = (typeof window.pageYOffset != 'undefined'?window.pageYOffset:typeof document.compatMode != 'undefined' && document.compatMode != 'BackCompat'?document.documentElement.scrollTop:typeof document.body != 'undefined'?document.body.scrollTop:"")
+    return top;
+}
+getTitle = function(i,text){
+    if(!text)text="";
+    switch(i){
+        case 0:
+            return "综合新闻" + text;
+        case 1:
+            return "养生资讯" + text;
+        case 2:
+            return "企业新闻" + text;
+        case 3:
+            return "行业资讯" + text;
+    }
+}
+//JS取参数
+function getURL(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]);
+    return null;
+}
 //Ajax
 function loadXMLDoc(url,type,func){
     var xmlhttp=null;

@@ -115,34 +115,8 @@
 
 
 </body>
+<script src="js/common.js"></script>
 <script>
-    //导航菜单浮动
-    window.onscroll = function(){
-        var el = $("#menu");
-        var top = (typeof window.pageYOffset != 'undefined'?window.pageYOffset:typeof document.compatMode != 'undefined' && document.compatMode != 'BackCompat'?document.documentElement.scrollTop:typeof document.body != 'undefined'?document.body.scrollTop:"");
-        el.style.background = (ie()>8?top/55/2<=0.8?"rgba(255,255,255,"+top/55/2+")":"rgba(255,255,255,0.8)":top>55?"#fff":"");
-
-        if(top >= 55){
-            el.style.position = "fixed";
-        }else{
-            el.style.position = "";
-        }
-    };
-
-    //分享按钮
-    var share = new Worm({
-        el: "#head_right",
-        data: {
-            over: function (e) {
-                e.style.color = "#f24853";
-                $("div", e).style.display = "block";
-            },
-            out: function (e) {
-                e.style.color = "";
-                $("div", e).style.display = "";
-            }
-        }
-    });
 
     var text = [{icon:"&#xe665;",title:"产业",text:"双桥燕京30年<br/>铸造品质传奇"},{icon:"&#xe60a;",title:"产地",text:"地道药材<br/>原产地药材专家"},{icon:"&#xe620;",title:"种植",text:"多个药材基地<br/>源头把控质量"},{icon:"&#xe653;",title:"工艺",text:"加工符合中国药典和<br/>北京市中药炮制规范"},{icon:"&#xe63c;",title:"品质",text:"所有饮片严格检测<br/>执行GMP生产标准"}];
     var neirong="";
@@ -155,18 +129,7 @@
             lise:neirong
         }
     })
-    //menu菜单导航
-    var menu = new Worm({
-        el:"#poster_bg",
-        data:{
-            menu1:"官网首页",
-            menu2:"新闻资讯",
-            menu3:"产品资料",
-            menu4:"合作加盟",
-            menu5:"联系我们",
-            menu6:"关于我们"
-        }
-    });
+
 
     //海报
     AjaxText = function(e){
