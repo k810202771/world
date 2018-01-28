@@ -42,7 +42,6 @@ $text = mysql_fetch_array($result);
 mysql_close($link);
 $jsonData = "{\"uid\":\"".$uid."\",\"last\":{\"title\":\"".$last["title"]."\",\"id\":\"".$last["Id"]."\"},\"next\":{\"title\":\"".$next["title"]."\",\"id\":\"".$next["Id"]."\"},\"title\":\"".$row["title"]."\",\"time\":\"".$row["time"]."\",\"text\":\"".htmlspecialchars($text["text"])."\"}";
 
-
 //写入文件
 $myfile = fopen($file, "w") or die("写入失败！");
 fwrite($myfile, $jsonData);

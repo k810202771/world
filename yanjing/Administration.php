@@ -20,23 +20,22 @@ switch ($type) {
 
 $path = $_SERVER['DOCUMENT_ROOT'] . (substr($path, 0, 1) == "/" ? "":"/") . $path;
 $result = array();
-
 traversing($path, $result, $type);
-print_r($result);
+echo json_encode($result,JSON_UNESCAPED_SLASHES);
 
 function traversing($path, &$result, $type){
     $curr = glob($path."/*");
     if($curr){
         foreach($curr as $f){
             if(is_dir($f)){
-                array_push($result, $f);
+                //array_push($result, $f);
                 traversing($f, $result,$type);
             }else{
             	for ($i=0; $i < count($type); $i++) { 
             		if(strtolower(substr($f, -4))==$type[$i]){
-                		array_push($result, $f);
+                		array_push($result, str_replace($_SERVER['DOCUMENT_ROOT'],"",$f));
             		}elseif ($type[$i] == ".*") {
-            			array_push($result, $f);
+            			array_push($result, str_replace($_SERVER['DOCUMENT_ROOT'],"",$f));
             		}
             	}
             }

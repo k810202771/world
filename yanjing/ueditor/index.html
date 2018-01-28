@@ -103,7 +103,7 @@
         </div>
     </div>
     <div class="preview">
-        <div class="close" onclick="closep()">关闭</div>
+        <div class="close" onclick="closeP()">关闭</div>
         <div class="content box">
 
         </div>
@@ -135,10 +135,27 @@
         $$("body").style.overflow = "hidden";
         $$(".preview").style.display = "block";
         $$(".content",$$(".preview")).innerHTML = UE.getEditor('editor').getContent();
+        //开始取出文章内的图片--------------------------------------------------
+        var imgReg = /<img.*?(?:>|\/>)/gi;
+        var srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
+        var arr = $$(".content",$$(".preview")).innerHTML.match(imgReg);
+        console.log(arr)
+        for (var i = 0; i < arr.length; i++) {
+            //正则去掉img标签
+            var src = arr[i].match(srcReg);
+            //获取图片地址
+            if(src[1]){
+                alert('已匹配的图片地址'+(i+1)+'：'+src[1]);
+            }
+        }
+        //结束取出文章内的图片--------------------------------------------------
     }
-    closep = function () {
+    closeP = function () {
         $$("body").style.overflow = "auto";
         $$(".preview").style.display = "none";
     }
+
+
+
 </script>
 </html>

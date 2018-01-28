@@ -44,6 +44,7 @@ $result = mysql_query($sql,$link);
 //初始化数据
 $text = "{\"type\":".$type.",\"page\":\"".$page."\",\"pageMax\":\"".$pageMax."\",\"text\":[";
 $i=0;
+
 //循环出数据
 while($row = mysql_fetch_array($result))
 {
@@ -53,6 +54,7 @@ while($row = mysql_fetch_array($result))
 		$text=$text.",";
 	}
 }
+
 $text=$text."]}";
 
 //关闭数据库
