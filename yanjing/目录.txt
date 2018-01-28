@@ -1,0 +1,7 @@
+Administration.php //文件管理
+getArticle.php //获取文件
+post.php //获取列表
+root.php //连接数据库
+index.html //首页
+list.html //列表页
+article.html //文章内容页面
