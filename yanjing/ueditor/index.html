@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>发布文章</title>
+    <script type="text/javascript" charset="utf-8" src="ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="lang/zh-cn/zh-cn.js"></script>
+    <script>
+        function $$(text,Parent,judge){
+            var h = text.substr(0,1);
+            var t = text.substr(1,text.length - 1);
+            var pt = (Parent?Parent:document);
+            var el;
+            var a=[];
+            switch(h){
+                case "#":
+                    el = pt.getElementById(t);
+                    break;
+                case ".":
+                    el = pt.getElementsByClassName(t);
+                    break;
+            }
+            if(!el)el = pt.getElementsByTagName(text);
+            if(judge){
+                a[0] = (!el.length?el:el.length==1?el[0]:null);
+                if(!a[0]){a=el};
+                return a;
+            }
+            return (!el.length?el:el.length==1?el[0]:el);
+        }
+    </script>
+    <style>
+        body,html{margin: 0;width:100%;height: 100%;font: 15px "微软雅黑","黑体";background:#fffdf6;}
+        .box{width:100%;max-width: 1200px;min-width: 1000px;margin:0 auto;}
+        .text{
+            font-family: "微软雅黑";
+            margin:10px 0;
+            width: calc(100% - 20px);
+            border: 1px solid #d4d4d4;
+            border-radius: 3px;
+            outline: none;
+            padding: 10px;
+        }
+        .title{
+            font-size: 24px;
+        }
+        .subTitle{
+            height: 48px;
+            font-size: 16px;
+            resize:none;
+        }
+        .post{
+            background: #333333;
+            height: 48px;
+            width: 100%;
+            position: fixed;
+            bottom: 0px;
+            right: 10px;
+            z-index: 999;
+        }
+        .preview{
+            position: fixed;
+            bottom: 0px;
+            right: 0px;
+            left: 0px;
+            top: 0;
+            background: #eeeeee;
+            z-index: 1000;
+            display: none;
+            overflow: auto;
+        }
+        .close{
+            position: fixed;
+            height: 50px;
+            line-height: 50px;
+            width: 50px;
+            text-align: center;
+            right: 20px;
+            top: 0px;
+            background: #fff;
+            border:1px solid #eaeaea;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <input type="text" maxlength="32" placeholder="输入文章标题" class="text title" onchange="localStorage.yanjingTitle=this.value;">
+        <textarea class="text subTitle" placeholder="输入文章摘要，不输入自动获取文章的前128个文字。" maxlength="128" onkeydown="if(event.keyCode == 13)return false;" onchange="localStorage.yanjingSubTitle=this.value;"></textarea>
+        <div id="editor" type="text/plain" style="width:100%;height:500px;"></div>
+    </div>
+    <div style="height: 48px;width: 100%">
+
+    </div>
+    <div class="post">
+        <div class="box">
+            <input type="button" value="预览" onclick="preview()">
+            <input type="button" value="发布">
+        </div>
+    </div>
+    <div class="preview">
+        <div class="close" onclick="closep()">关闭</div>
+        <div class="content box">
+
+        </div>
+    </div>
+</body>
+<script>
+    var ue = UE.getEditor('editor',{
+        //关闭字数统计
+        wordCount:false,
+        //关闭elementPath
+        elementPathEnabled:false,
+    });
+
+    function _beforeInsertImage(){
+        console.log(123)
+    }
+
+    ue.ready(function () {
+        setTimeout(function () {
+            if(localStorage.yanjingTitle)$$(".title").value = localStorage.yanjingTitle;
+            if(localStorage.yanjingSubTitle)$$(".subTitle").value = localStorage.yanjingSubTitle;
+            ue.setContent(UE.getEditor('editor').execCommand( "getlocaldata"));
+        },0)
+    });
+    ue.addListener("contentChange",function(){
+        console.log('内容改变:'+ue.getContent());
+    });
+    preview = function () {
+        $$("body").style.overflow = "hidden";
+        $$(".preview").style.display = "block";
+        $$(".content",$$(".preview")).innerHTML = UE.getEditor('editor').getContent();
+    }
+    closep = function () {
+        $$("body").style.overflow = "auto";
+        $$(".preview").style.display = "none";
+    }
+</script>
+</html>

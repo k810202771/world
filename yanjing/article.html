@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -120,15 +120,12 @@
   //处理数据
   dataJson = function(e){
     var json = JSON.parse(e);
-    console.log((parseInt(getURL("uid"))-1));
     document.title = json.title + " 《食味草》双桥燕京中药饮片厂 - 食百味仙草，享健康人生。";
     $("#title-content").innerHTML = json.title;
     $("#time").innerHTML = json.time;
     $("#article_content").innerHTML = HTMLDecode(json.text);
-    //href='article.html?type="+getURL("type")+"&uid="+(parseInt(getURL("uid"))-1)+"&id="+json.last.id+"'
-    //href='article.html?type="+getURL("type")+"&uid="+(parseInt(getURL("uid"))+1)+"&id="+json.next.id+"'
-    $(".last").innerHTML = "上一篇："+(json.last.id?"<a onclick='onConnect("+getURL("type")+","+(parseInt(json.uid)-1)+","+json.last.id+")'>"+json.last.title+"</a>":"<a>没有更多了</a>");
-    $(".next").innerHTML = "下一篇："+(json.next.id?"<a onclick='onConnect("+getURL("type")+","+(parseInt(json.uid)+1)+","+json.next.id+")'>"+json.next.title+"</a>":"<a>没有更多了</a>");
+    $(".last").innerHTML = "上一篇："+(json.last.id?"<a href='article.html?type="+getURL("type")+"&uid="+(parseInt(json.uid)-1)+"&id="+json.last.id+"' onclick='onConnect("+getURL("type")+","+(parseInt(json.uid)-1)+","+json.last.id+")'>"+json.last.title+"</a>":"<a>没有更多了</a>");
+    $(".next").innerHTML = "下一篇："+(json.next.id?"<a href='article.html?type="+getURL("type")+"&uid="+(parseInt(json.uid)+1)+"&id="+json.next.id+"' onclick='onConnect("+getURL("type")+","+(parseInt(json.uid)+1)+","+json.next.id+")'>"+json.next.title+"</a>":"<a>没有更多了</a>");
   };
   // 刷新数据
   onConnect = function(type,uid,id){
