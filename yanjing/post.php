@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 error_reporting(0);
 
@@ -8,7 +8,8 @@ header('content-type:application/json;charset=utf8');
 // 获取分页参数
 $page = 1 ;
 $pageSize = 8;
-$type = 0;
+$type = -1;
+$typeText="";
 if(!is_null($_GET["page"])) {
 	$page = $_GET["page"];
 }
@@ -39,17 +40,27 @@ $sql = "SELECT * FROM article where type='".$type."'";
 $result = mysql_query($sql,$link);
 $pageMax = ceil(mysql_num_rows($result) / $pageSize);
 // 分页数据
-$sql = "SELECT * FROM article where type='".$type."' order by id desc limit ".(($page-1)*$pageSize).",".($pageSize);
+$type>0 && ($typeText = "where type='".$type."'");
+$sql = "SELECT * FROM article ".$typeText." order by id desc limit ".(($page-1)*$pageSize).",".($pageSize);
 $result = mysql_query($sql,$link);
 //初始化数据
-$text = "{\"type\":".$type.",\"page\":\"".$page."\",\"pageMax\":\"".$pageMax."\",\"text\":[";
+if($type==0){
+	$text = "{\"page\":\"".$page."\",\"pageMax\":\"".$pageMax."\",\"text\":[";
+}else{
+	$text = "{\"type\":".$type.",\"page\":\"".$page."\",\"pageMax\":\"".$pageMax."\",\"text\":[";
+}
 $i=0;
 
 //循环出数据
 while($row = mysql_fetch_array($result))
 {
 	$i++;
-	$text = $text."{\"Uid\":".$i.",\"id\":".$row["Id"].",\"img\":[".$row["cover"]."],\"title\":\"".$row["title"]."\",\"subTitle\":\"".$row["subTitle"]."\",\"time\":\"".$row["time"]."\"}";
+	if($type==0){
+		$text = $text."{\"type\":".$row["type"].",";
+	}else{
+		$text = $text."{";
+	}
+	$text = $text."\"Uid\":".$i.",\"id\":".$row["Uid"].",\"img\":[".$row["cover"]."],\"title\":\"".$row["title"]."\",\"subTitle\":\"".$row["subTitle"]."\",\"time\":\"".$row["time"]."\"}";
 	if($i!=mysql_num_rows($result)){
 		$text=$text.",";
 	}

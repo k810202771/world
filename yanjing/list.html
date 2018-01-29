@@ -177,7 +177,8 @@
         var getList = function(jsonObj){
             var text="";
             for(var i = 0;i<jsonObj.length;i++){
-                text = text+"<li><a target='_blank' href='article.html?type="+json.type+"&uid="+jsonObj[i].Uid+"&id="+jsonObj[i].id+"'><img src='"+jsonObj[i].img[0]+"' /><span class='title'>"+jsonObj[i].title+"</span><span class='text'>"+jsonObj[i].subTitle+"</span></li></a>"
+                var type = (p==0?jsonObj[i].type:json.type);
+                text = text+"<li><a target='_blank' href='article.html?type="+type+"&uid="+jsonObj[i].Uid+"&id="+jsonObj[i].id+"'><img src='"+jsonObj[i].img[0]+"' /><span class='title'>"+jsonObj[i].title+"</span><span class='text'>"+jsonObj[i].subTitle+"</span></li></a>"
             }
             return text;
         };

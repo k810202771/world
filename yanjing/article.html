@@ -124,8 +124,8 @@
     $("#title-content").innerHTML = json.title;
     $("#time").innerHTML = json.time;
     $("#article_content").innerHTML = HTMLDecode(json.text);
-    $(".last").innerHTML = "上一篇："+(json.last.id?"<a href='article.html?type="+getURL("type")+"&uid="+(parseInt(json.uid)-1)+"&id="+json.last.id+"' onclick='onConnect("+getURL("type")+","+(parseInt(json.uid)-1)+","+json.last.id+")'>"+json.last.title+"</a>":"<a>没有更多了</a>");
-    $(".next").innerHTML = "下一篇："+(json.next.id?"<a href='article.html?type="+getURL("type")+"&uid="+(parseInt(json.uid)+1)+"&id="+json.next.id+"' onclick='onConnect("+getURL("type")+","+(parseInt(json.uid)+1)+","+json.next.id+")'>"+json.next.title+"</a>":"<a>没有更多了</a>");
+    $(".last").innerHTML = "上一篇："+(json.last.id?"<a href='article.html?type="+getURL("type")+"&uid="+(parseInt(json.uid)-1)+"&id="+json.last.id+"' onclick='onConnect("+getURL("type")+","+(parseInt(json.uid)-1)+","+json.last.id+");return false;'>"+json.last.title+"</a>":"<a>没有更多了</a>");
+    $(".next").innerHTML = "下一篇："+(json.next.id?"<a href='article.html?type="+getURL("type")+"&uid="+(parseInt(json.uid)+1)+"&id="+json.next.id+"' onclick='onConnect("+getURL("type")+","+(parseInt(json.uid)+1)+","+json.next.id+");return false;'>"+json.next.title+"</a>":"<a>没有更多了</a>");
   };
   // 刷新数据
   onConnect = function(type,uid,id){

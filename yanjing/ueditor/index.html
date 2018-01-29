@@ -38,14 +38,22 @@
         .box{width:100%;max-width: 1200px;min-width: 1000px;margin:0 auto;}
         .text{
             font-family: "微软雅黑";
-            margin:10px 0;
-            width: calc(100% - 20px);
             border: 1px solid #d4d4d4;
+            margin-bottom:10px;
+            width: calc(100% - 20px);
             border-radius: 3px;
             outline: none;
             padding: 10px;
         }
         .title{
+            width: calc(100% - 400px);
+            margin-top: 10px;
+            font-size: 24px;
+        }
+        .select{
+            width: 150px;
+            margin-top: 10px;
+            margin-right: 10px;
             font-size: 24px;
         }
         .subTitle{
@@ -54,13 +62,16 @@
             resize:none;
         }
         .post{
-            background: #333333;
+            background: #fffdf6;
             height: 48px;
+            line-height: 48px;
             width: 100%;
             position: fixed;
             bottom: 0px;
             right: 10px;
             z-index: 999;
+            text-align: center;
+            border-top:1px solid #d4d4d4;
         }
         .preview{
             position: fixed;
@@ -85,12 +96,45 @@
             border:1px solid #eaeaea;
             cursor: pointer;
         }
+        .inputButton{
+            height: 32px;
+            width: 150px;
+            margin: 0 10px;
+            border:1px solid #c0e4ff;
+            outline: none;
+            background-color: #e7f5ff;
+            color: #346c93;
+            border-radius: 3px;
+            transition: background-color 0.5s;
+        }
+        .inputButton:hover{
+            background-color: #3cbdfe;
+            color: #fff;
+        }
+        .cover{
+            height: 170px;
+            overflow-y: hidden;
+            overflow-x: auto;
+            white-space:nowrap;
+        }
+        .alert{
+            border: 0px;font-size:12px;color: red;padding: 0px;
+        }
     </style>
 </head>
 <body>
     <div class="box">
+        <select class="select text">
+            <option value="0"></option>
+            <option value="1">养生资讯</option>
+            <option value="2">企业新闻</option>
+            <option value="3">行业资讯</option>
+        </select>
         <input type="text" maxlength="32" placeholder="输入文章标题" class="text title" onchange="localStorage.yanjingTitle=this.value;">
+        <div class="alert text">* 标题必须填写</div>
         <textarea class="text subTitle" placeholder="输入文章摘要，不输入自动获取文章的前128个文字。" maxlength="128" onkeydown="if(event.keyCode == 13)return false;" onchange="localStorage.yanjingSubTitle=this.value;"></textarea>
+        <div class="cover text"></div>
+        <div class="alert text">* 请选择最多三张最少选择一张图片作为封面</div>
         <div id="editor" type="text/plain" style="width:100%;height:500px;"></div>
     </div>
     <div style="height: 48px;width: 100%">
@@ -98,8 +142,8 @@
     </div>
     <div class="post">
         <div class="box">
-            <input type="button" value="预览" onclick="preview()">
-            <input type="button" value="发布">
+            <input type="button" value="预览" onclick="preview()" class="inputButton">
+            <input type="button" value="发布" onclick="Release()" class="inputButton">
         </div>
     </div>
     <div class="preview">
@@ -110,6 +154,38 @@
     </div>
 </body>
 <script>
+    //Ajax
+    function loadXMLDoc(url,type,data,func){
+        var xmlhttp=null;
+        if (window.XMLHttpRequest)
+        {// code for IE7, Firefox, Opera, etc.
+            xmlhttp=new XMLHttpRequest();
+        }
+        else if (window.ActiveXObject)
+        {// code for IE6, IE5
+            xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        if (xmlhttp!=null)
+        {
+
+            xmlhttp.onreadystatechange=function()
+            {
+                if (xmlhttp.readyState==4 && xmlhttp.status==200)
+                {
+                    func(xmlhttp.responseText);
+                }
+            }
+
+            xmlhttp.open(type,url,true);
+            xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            xmlhttp.send(data);
+        }
+        else
+        {
+            alert("您的浏览器不支持AJAX请更换浏览器！");
+        }
+    }
+
     var ue = UE.getEditor('editor',{
         //关闭字数统计
         wordCount:false,
@@ -125,36 +201,87 @@
         setTimeout(function () {
             if(localStorage.yanjingTitle)$$(".title").value = localStorage.yanjingTitle;
             if(localStorage.yanjingSubTitle)$$(".subTitle").value = localStorage.yanjingSubTitle;
-            ue.setContent(UE.getEditor('editor').execCommand( "getlocaldata"));
+            ue.setContent(ue.execCommand( "getlocaldata"));
         },0)
     });
     ue.addListener("contentChange",function(){
-        console.log('内容改变:'+ue.getContent());
-    });
-    preview = function () {
-        $$("body").style.overflow = "hidden";
-        $$(".preview").style.display = "block";
-        $$(".content",$$(".preview")).innerHTML = UE.getEditor('editor').getContent();
         //开始取出文章内的图片--------------------------------------------------
         var imgReg = /<img.*?(?:>|\/>)/gi;
         var srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
-        var arr = $$(".content",$$(".preview")).innerHTML.match(imgReg);
-        console.log(arr)
+        var arr = ue.getContent().match(imgReg);
+        if(!arr)arr=[];
+        var temp = document.createElement("div");
         for (var i = 0; i < arr.length; i++) {
             //正则去掉img标签
             var src = arr[i].match(srcReg);
             //获取图片地址
             if(src[1]){
-                alert('已匹配的图片地址'+(i+1)+'：'+src[1]);
+                var img = document.createElement("img");
+                var div = document.createElement("div");
+                img.src = src[1];
+                img.style = "width:260px;height:150px;";
+                div.style = "font-size:0;display:inline-block;margin-right:5px;border:3px solid transparent"
+                div.setAttribute("onclick","checkCover(this)")
+                div.appendChild(img);
+                temp.appendChild(div);
+                Contrast(div);
             }
         }
+        $$(".cover").innerHTML = temp.innerHTML;
         //结束取出文章内的图片--------------------------------------------------
+    });
+    var coverArray=[];
+    Contrast = function(e){
+        var elSrc = $$("img",e).getAttribute("src");
+        console.log(elSrc);
+        for(var i=0;i<coverArray.length;i++){
+            if(coverArray[i]== elSrc){
+                e.style.borderColor="#3cbdfe";
+            }
+        }
+    }
+    checkCover = function(e){
+        var elSrc = $$("img",e).getAttribute("src");
+        if(e.style.borderColor != 'transparent'){
+            for(var i=0;i<coverArray.length;i++){
+                if(coverArray[i]== elSrc)coverArray.splice(i,1);
+            }
+            e.style.borderColor="transparent";
+            return false;
+        }
+        if(coverArray.length < 3){
+            e.style.borderColor = '#3cbdfe'
+            coverArray.push(elSrc);
+            return false;
+        }
+        alert("最多选择三张！")
+    }
+    preview = function () {
+        $$("body").style.overflow = "hidden";
+        $$(".preview").style.display = "block";
+        $$(".content",$$(".preview")).innerHTML = UE.getEditor('editor').getContent();
     }
     closeP = function () {
         $$("body").style.overflow = "auto";
         $$(".preview").style.display = "none";
     }
-
+    //发布成功后回调
+    Submit = function(e){
+        //
+    }
+    //发布文章
+    Release = function(){
+        var ueValue = ue.getContentTxt();
+        var type = $$(".select").value;
+        var title = $$(".title").value;
+        if(type=="0"){alert("请选择要发布的文章类型！");return false};
+        if(!title){alert("请输入标题！");return false};
+        if(coverArray.length<1){alert("请选择一张图片作为封面！");return false};
+        if(ueValue.length < 30){alert("请输入大于30个字符的文章！");return false};
+        if(!$$(".subTitle").value){$$(".subTitle").value = (ueValue.length>128?ueValue.substr(0,128):ueValue.substr(0,ueValue.length))};
+        var subTitle = $$(".subTitle").value;
+        loadXMLDoc("../WriteData.php","post",'data={\"title\":\"'+title+'\",\"type\":\"'+type+'\",\"subTitle\":\"'+subTitle+'\",\"cover\":'+JSON.stringify(coverArray)+'}&text='+ue.getContent(),Submit)
+    }
 
 
 </script>

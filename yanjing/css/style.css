@@ -248,6 +248,7 @@ a{text-decoration: none}
     line-height: 45px;
     font-size: 18px;
     color: #666666;
+    margin-bottom: 9px;
  }
 #content_left .list .caption a{
     cursor: pointer;
@@ -360,7 +361,7 @@ hr{
 }
 #content_left .list .first .list_left{
     padding:0;
-    height: 124px;
+    height: 115px;
     width: 200px;
     background-size: 100%;
     background-position: center;

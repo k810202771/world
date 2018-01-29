@@ -33,16 +33,17 @@ $sql = "SELECT * FROM article where type='".$type."' order by id desc limit ".$u
 $result = mysql_query($sql,$link);
 $next = mysql_fetch_array($result);
 // 获取数据
-$sql = "SELECT * FROM article where id='".$id."'";
+$sql = "SELECT * FROM article where Uid='".$id."'";
 $result = mysql_query($sql,$link);
 $row = mysql_fetch_array($result);
-$sql = "SELECT * FROM content where id='".$id."'";
+$sql = "SELECT * FROM content where Uid='".$id."'";
 $result = mysql_query($sql,$link);
 $text = mysql_fetch_array($result);
 mysql_close($link);
-$jsonData = "{\"uid\":\"".$uid."\",\"last\":{\"title\":\"".$last["title"]."\",\"id\":\"".$last["Id"]."\"},\"next\":{\"title\":\"".$next["title"]."\",\"id\":\"".$next["Id"]."\"},\"title\":\"".$row["title"]."\",\"time\":\"".$row["time"]."\",\"text\":\"".htmlspecialchars($text["text"])."\"}";
+$jsonData = "{\"uid\":\"".$uid."\",\"last\":{\"title\":\"".$last["title"]."\",\"id\":\"".$last["Uid"]."\"},\"next\":{\"title\":\"".$next["title"]."\",\"id\":\"".$next["Uid"]."\"},\"title\":\"".$row["title"]."\",\"time\":\"".$row["time"]."\",\"text\":\"".htmlspecialchars($text["text"])."\"}";
 
 //写入文件
+mkdir ("save/article",0777,true);
 $myfile = fopen($file, "w") or die("写入失败！");
 fwrite($myfile, $jsonData);
 fclose($myfile);
