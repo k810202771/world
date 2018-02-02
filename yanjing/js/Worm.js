@@ -1,11 +1,28 @@
 /*
 * */
-//兼容所有浏览器的top
+getTypeText = function(e){
+    switch (e){
+        case 0:
+            return "";
+        case 1:
+            return "【养生资讯】";
+        case 2:
+            return "【企业新闻】";
+        case 3:
+            return "【行业资讯】";
+    }
+}
+//解决有些变量不能判断为空的情况
+function isNull(data){
+    return (data == "" || data == "undefined" || data == null?false : true);
+}
+//兼容所有浏览器的滚动条位置
 windostop = function(tTop){
     if(tTop>=0)window.scroll(0,tTop);
     var top = (typeof window.pageYOffset != 'undefined'?window.pageYOffset:typeof document.compatMode != 'undefined' && document.compatMode != 'BackCompat'?document.documentElement.scrollTop:typeof document.body != 'undefined'?document.body.scrollTop:"")
     return top;
 }
+//取出列表名称
 getTitle = function(i,text){
     if(!text)text="";
     switch(i){
@@ -29,6 +46,13 @@ function getURL(name) {
 //Ajax
 function loadXMLDoc(url,type,func){
     var xmlhttp=null;
+
+    $("body").style.overflow = "hidden";
+    var loaddiv = document.createElement("div");
+    loaddiv.style = "width:100%;height:100%;position:fixed;top:0px;z-index:9999;background:rgba(255,255,255,0.8);";
+    loaddiv.innerHTML = "<div style='width:100%;text-align:center;position: absolute;top:50%;'>Loading……</div>"
+    $("body").appendChild(loaddiv);
+
     if (window.XMLHttpRequest)
     {// code for IE7, Firefox, Opera, etc.
         xmlhttp=new XMLHttpRequest();
@@ -45,6 +69,8 @@ function loadXMLDoc(url,type,func){
             if (xmlhttp.readyState==4 && xmlhttp.status==200)
             {
                 func(xmlhttp.responseText);
+                $("body").style.overflow = "auto";
+                loaddiv.parentNode.removeChild(loaddiv);
             }
         }
 

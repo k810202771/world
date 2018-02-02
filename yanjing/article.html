@@ -101,13 +101,17 @@
 </body>
 <script src="js/common.js"></script>
 <script>
-  //HTML转义
-  function HTMLDecode(text) {
-    var temp = document.createElement("div");
-    temp.innerHTML = text;
-    var output = temp.innerText || temp.textContent;
-    temp = null;
-    return output;
+  function html_decode(str){
+    var s = "";
+    if (str.length == 0) return "";
+    s = str.replace(/&amp;/g, "&");
+    s = s.replace(/&lt;/g, "<");
+    s = s.replace(/&gt;/g, ">");
+    s = s.replace(/&nbsp;/g, " ");
+    s = s.replace(/&#39;/g, "\'");
+    s = s.replace(/&quot;/g, "\"");
+    s = s.replace(/<br\/>/g, "\n");
+    return s;
   }
   //到顶部
   topp = function(){
@@ -119,11 +123,12 @@
   }
   //处理数据
   dataJson = function(e){
+    windostop(0);
     var json = JSON.parse(e);
     document.title = json.title + " 《食味草》双桥燕京中药饮片厂 - 食百味仙草，享健康人生。";
     $("#title-content").innerHTML = json.title;
     $("#time").innerHTML = json.time;
-    $("#article_content").innerHTML = HTMLDecode(json.text);
+    $("#article_content").innerHTML = decodeURIComponent(html_decode(json.text));
     $(".last").innerHTML = "上一篇："+(json.last.id?"<a href='article.html?type="+getURL("type")+"&uid="+(parseInt(json.uid)-1)+"&id="+json.last.id+"' onclick='onConnect("+getURL("type")+","+(parseInt(json.uid)-1)+","+json.last.id+");return false;'>"+json.last.title+"</a>":"<a>没有更多了</a>");
     $(".next").innerHTML = "下一篇："+(json.next.id?"<a href='article.html?type="+getURL("type")+"&uid="+(parseInt(json.uid)+1)+"&id="+json.next.id+"' onclick='onConnect("+getURL("type")+","+(parseInt(json.uid)+1)+","+json.next.id+");return false;'>"+json.next.title+"</a>":"<a>没有更多了</a>");
   };
@@ -131,7 +136,7 @@
   onConnect = function(type,uid,id){
     loadXMLDoc("getArticle.php?id="+id+"&uid="+uid+"&type="+type,"get",dataJson);
   };
-  loadXMLDoc("getArticle.php?id="+getURL("id")+"&uid="+getURL("uid")+"&type="+getURL("type"),"get",dataJson);
+  onConnect(getURL("type"),getURL("uid"),getURL("id"))
 
 </script>
 </html>

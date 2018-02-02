@@ -28,8 +28,8 @@ var share = new Worm({
 var menu = new Worm({
     el:"#poster_bg",
     data:{
-        menu1:"官网首页",
-        menu2:"新闻资讯",
+        menu1:"<a href='index.html'>官网首页</a>",
+        menu2:"<a href='list.html'>新闻资讯</a>",
         menu3:"产品资料",
         menu4:"合作加盟",
         menu5:"联系我们",

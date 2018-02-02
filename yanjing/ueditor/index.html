@@ -125,10 +125,11 @@
 <body>
     <div class="box">
         <select class="select text">
-            <option value="0"></option>
+            <option value="-1"></option>
             <option value="1">养生资讯</option>
             <option value="2">企业新闻</option>
             <option value="3">行业资讯</option>
+            <option value="0">隐藏的文章</option>
         </select>
         <input type="text" maxlength="32" placeholder="输入文章标题" class="text title" onchange="localStorage.yanjingTitle=this.value;">
         <div class="alert text">* 标题必须填写</div>
@@ -142,12 +143,18 @@
     </div>
     <div class="post">
         <div class="box">
-            <input type="button" value="预览" onclick="preview()" class="inputButton">
-            <input type="button" value="发布" onclick="Release()" class="inputButton">
+            <input type="button" value="预览" onclick="preview(1)" class="inputButton">
+            <input type="button" value="发布" onclick="Release(2)" class="inputButton">
         </div>
     </div>
-    <div class="preview">
-        <div class="close" onclick="closeP()">关闭</div>
+    <div class="preview box1">
+        <div class="close" onclick="closeP(1)">关闭</div>
+        <div class="content box">
+
+        </div>
+    </div>
+    <div class="preview box2">
+        <div class="close" onclick="closeP(2)">关闭</div>
         <div class="content box">
 
         </div>
@@ -193,10 +200,6 @@
         elementPathEnabled:false,
     });
 
-    function _beforeInsertImage(){
-        console.log(123)
-    }
-
     ue.ready(function () {
         setTimeout(function () {
             if(localStorage.yanjingTitle)$$(".title").value = localStorage.yanjingTitle;
@@ -230,10 +233,11 @@
         $$(".cover").innerHTML = temp.innerHTML;
         //结束取出文章内的图片--------------------------------------------------
     });
+
+
     var coverArray=[];
     Contrast = function(e){
         var elSrc = $$("img",e).getAttribute("src");
-        console.log(elSrc);
         for(var i=0;i<coverArray.length;i++){
             if(coverArray[i]== elSrc){
                 e.style.borderColor="#3cbdfe";
@@ -256,31 +260,57 @@
         }
         alert("最多选择三张！")
     }
-    preview = function () {
+    preview = function (e) {
         $$("body").style.overflow = "hidden";
-        $$(".preview").style.display = "block";
-        $$(".content",$$(".preview")).innerHTML = UE.getEditor('editor').getContent();
+        $$(".box"+e).style.display = "block";
+        switch (e){
+            case 1:
+                $$(".content",$$(".box"+e)).innerHTML = ue.getContent();
+                break;
+            case 2:
+                $$(".content",$$(".box"+e)).innerHTML = "<div>发布成功！即将跳转</div>";
+                break;
+        }
     }
-    closeP = function () {
+    closeP = function (e) {
         $$("body").style.overflow = "auto";
-        $$(".preview").style.display = "none";
+        $$(".box"+e).style.display = "none";
+    }
+    //HTML转义
+    //HTML解义
+    function html_encode(str){
+        var s = "";
+        if (str.length == 0) return "";
+        s = str.replace(/&/g, "&amp;");
+        s = s.replace(/</g, "&lt;");
+        s = s.replace(/>/g, "&gt;");
+        s = s.replace(/ /g, "&nbsp;");
+        s = s.replace(/\'/g, "&#39;");
+        s = s.replace(/\"/g, "&quot;");
+        s = s.replace(/\n/g, "<br/>");
+        return s;
     }
     //发布成功后回调
     Submit = function(e){
-        //
+        localStorage.removeItem("yanjingTitle");
+        localStorage.removeItem("yanjingSubTitle");
+        ue.execCommand("clearlocaldata");
+        var json = JSON.parse(e);
+        window.location.href="../article.html?type="+json.type+"&uid="+json.Uid+"&id="+json.id+"";
     }
     //发布文章
-    Release = function(){
+    Release = function(e){
         var ueValue = ue.getContentTxt();
         var type = $$(".select").value;
         var title = $$(".title").value;
-        if(type=="0"){alert("请选择要发布的文章类型！");return false};
+        if(type<0){alert("请选择要发布的文章类型！");return false};
         if(!title){alert("请输入标题！");return false};
         if(coverArray.length<1){alert("请选择一张图片作为封面！");return false};
         if(ueValue.length < 30){alert("请输入大于30个字符的文章！");return false};
         if(!$$(".subTitle").value){$$(".subTitle").value = (ueValue.length>128?ueValue.substr(0,128):ueValue.substr(0,ueValue.length))};
         var subTitle = $$(".subTitle").value;
-        loadXMLDoc("../WriteData.php","post",'data={\"title\":\"'+title+'\",\"type\":\"'+type+'\",\"subTitle\":\"'+subTitle+'\",\"cover\":'+JSON.stringify(coverArray)+'}&text='+ue.getContent(),Submit)
+        loadXMLDoc("../WriteData.php","post",'data={\"title\":\"'+title+'\",\"type\":\"'+type+'\",\"subTitle\":\"'+subTitle+'\",\"cover\":'+JSON.stringify(coverArray)+'}&text='+encodeURIComponent(html_encode(ue.getContent())),Submit)
+        preview(e);
     }
 
 

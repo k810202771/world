@@ -169,15 +169,32 @@
     };
     loadXMLDoc("data/hb.json","get",AjaxText);
 
+
+    var list_json={Count:0,data:"["};
     List = function(e){
-        var listJSON=e;
+        list_json.data += (list_json.Count>0?",":"")+e;
+        list_json.Count ++;
+        if(list_json.Count < 4){return false;}else{list_json.data+="]"};
+        var listJSON=list_json.data;
         function handlE(json){
             var obj=JSON.parse(json),that="";
+            //排序
+            var Licount = [];
+            for(var o=0;o<obj.length;o++) {
+                Licount.push((obj[o].type?obj[o].type:0));
+            }
+            var index = 0;
             for(var o=0;o<obj.length;o++){
-                that=that+"<ul id='"+"list"+o+"'>"
-                for(var i=0;i<obj[o].length;i++){
-                    that=that+(i==0?"<li class='first'><a href='"+obj[o][i].url+"' target='_blank'><span class='list_left' style='background-image: url("+obj[o][i].img+")'></span><span class='list_content'><h1>"+obj[o][i].title+"</h1></span><span class='list_right v-title'>"+obj[o][i].time+"</span></a></li>":"<li><a href='"+obj[o][i].url+"' target='_blank'><span class='list_left'>"+obj[o][i].type+"</span><span class='list_content'>"+obj[o][i].title+"</span><span class='list_right v-title'>"+obj[o][i].time+"</span></a></li>");
+                that=that+"<ul id='"+"list"+index+"'>"
+                var Liobj = obj[Licount.indexOf(index)];
+                for(var i=0;i<Liobj.text.length;i++){
+                    var LiUrl = "article.html?type="+(index==0?Liobj.text[i].type:index)+"&uid="+Liobj.text[i].Uid+"&id="+Liobj.text[i].id;
+                    var LiType = (Liobj.type?Liobj.type:Liobj.text[i].type);
+                    var LiTime = Liobj.text[i].time;
+                    var LiTitle = Liobj.text[i].title;
+                    that=that+(i==0?"<li class='first'><a href='"+LiUrl+"' target='_blank'><span class='list_left' style='background-image: url("+Liobj.text[i].img[0]+")'></span><span class='list_content'><h1>"+LiTitle+"</h1></span><span class='list_right v-title'>"+LiTime+"</span></a></li>":"<li><a href='"+LiUrl+"' target='_blank'><span class='list_left'>"+getTitle(LiType)+"</span><span class='list_content'>"+LiTitle+"</span><span class='list_right v-title'>"+LiTime+"</span></a></li>");
                 }
+                index ++;
                 that=that+"</ul>"
             }
             return that;
@@ -217,12 +234,16 @@
 
 
     };
-    loadXMLDoc("data/list.json","get",List);
+    loadXMLDoc("post.php?page=1&type=0&pageSize=7","get",List);
+    loadXMLDoc("post.php?page=1&type=1&pageSize=7","get",List);
+    loadXMLDoc("post.php?page=1&type=2&pageSize=7","get",List);
+    loadXMLDoc("post.php?page=1&type=3&pageSize=7","get",List);
+
     //手册
     manual = function(e){
         var listJSON=e;
         function handlE(json){
-            var obj=JSON.parse(json),that="",img="",div="",eimg="",id,tail;
+            var obj=JSON.parse(json).text,that="",img="",div="",eimg="",id,tail;
             for(var o=0;o<obj.length;o++){
                 eimg="";
                 id=obj[o].img.length;
@@ -231,11 +252,11 @@
                     eimg=eimg+"<div "+tail+" ><img src='"+obj[o].img[i]+"' /></div>";
                 }
                 img=(obj[o].img?"<div class='c-img c-img"+id+"' >"+eimg+"</div>":"");
-                div="<div class='H-title'>"+obj[o].title+"</div><div class='v-title'>"+obj[o].text+"</div>" + img;
-                that=that+"<li><a href='"+obj[o].url+"' target='_blank'>"+div+"</a></li>";
+                div="<div class='H-title'>"+obj[o].title+"</div><div class='v-title'>"+obj[o].subTitle+"</div>" + img;
+                that=that+"<li><a href='article.html?type=1&uid="+obj[o].Uid+"&id="+obj[o].id+"' target='_blank'>"+div+"</a></li>";
             }
             //查看更多
-            that=that+"<li style='text-align: center'><a href='#' target='_blank'><div class='v-title'>查看更多</div></a></li>";
+            that=that+"<li style='text-align: center'><a href='list.html' onclick='sessionStorage.yanJinListType = \"1\"' target='_blank'><div class='v-title'>查看更多</div></a></li>";
             return that;
         }
         new Worm({
@@ -246,7 +267,7 @@
             }
         })
     };
-    loadXMLDoc("data/text.json","get",manual);
+    loadXMLDoc("post.php?page=1&type=1&pageSize=10","get",manual);
 
     //多屏滚动
     function poster(time,index,el,sel,gd){

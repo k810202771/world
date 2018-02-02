@@ -3,5 +3,6 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/yanjing/css/style.css" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/yanjing/js/common.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/yanjing/m/wormScroll.js" charset="UTF-8" />
   </component>
 </project>

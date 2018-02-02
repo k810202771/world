@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Document</title>
+    <script src="wormScroll.js"></script>
+</head>
+<body>
+    <herader>
+        <div class="title">
+
+        </div>
+    </herader>
+    <article>
+        <div class="wormScroll">
+
+        </div>
+    </article>
+    <footer>
+        <div class="bottom">
+
+        </div>
+    </footer>
+</body>
+<script>
+    var app = new wormScroll(
+    ".wormScroll",
+    {
+        time:3,
+        reload:function(){
+            location.reload();
+        },
+        load:function(){
+            app.InsertLine("插入了我");
+        }
+    });
+    for(var i =0;i<40;i++){
+        app.InsertLine("插入了我");
+    }
+</script>
+</html>

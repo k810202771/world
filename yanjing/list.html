@@ -69,16 +69,22 @@
             color: #e37b63;
             margin-left: 10px;
         }
-        .News a{
+        .News li>a{
             display: inline-block;
             width: 100%;
             height: 100%;
         }
         .News .title{
+            text-align: left;
             position: absolute;
             font-size: 20px;
             color: #444;
             transition: margin-left 0.3s;
+            right: 10px;
+            left: 300px;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
         }
         .News .text{
             position: absolute;
@@ -91,8 +97,28 @@
             height:150px;
             margin:0 20px;
         }
-        .content_footer{
-
+        .page{
+            text-align: center;
+        }
+        .page a{
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            margin-left: -1px;
+            border: 1px solid #f2f2f2;
+            cursor:pointer;
+            position:relative;
+        }
+        .page a:hover{
+            z-index: 99;
+            background: #f2f8ff;
+            border: 1px solid #38f;
+        }
+        .page .Selected{
+            z-index: 99;
+            background: #f2f8ff;
+            border: 1px solid #38f;
         }
     </style>
 </head>
@@ -139,7 +165,6 @@
             </ul>
         </div>
     </div>
-    <div class="content_footer"></div>
 </article>
 
 <!--页尾-->
@@ -174,18 +199,39 @@
     dataJson[3] = function(e){dJson(e,3)};
     dJson = function(e,p){
         var json = JSON.parse(e);
+        if(json.pageMax < json.page){alert("无此页面！");return false;}
         var getList = function(jsonObj){
             var text="";
             for(var i = 0;i<jsonObj.length;i++){
                 var type = (p==0?jsonObj[i].type:json.type);
-                text = text+"<li><a target='_blank' href='article.html?type="+type+"&uid="+jsonObj[i].Uid+"&id="+jsonObj[i].id+"'><img src='"+jsonObj[i].img[0]+"' /><span class='title'>"+jsonObj[i].title+"</span><span class='text'>"+jsonObj[i].subTitle+"</span></li></a>"
+                text = text+"<li><a target='_blank' href='article.html?type="+type+"&uid="+jsonObj[i].Uid+"&id="+jsonObj[i].id+"'><img src='"+jsonObj[i].img[0]+"' /><span class='title'>"+getTypeText(type)+jsonObj[i].title+"</span><span class='text'>"+jsonObj[i].subTitle+"</span></li></a>"
             }
             return text;
         };
-        $("ul",listel[p]).innerHTML = getList(json.text);
+        var pageHTML = function(e){
+            var text = "";
+            if(e.pageMax > 1){
+                text = "<div class='page'>";
+                for(var i=1;i <= e.pageMax;i++){
+                    let pageClass = (e.page == i?"class = 'Selected'":"");
+                    let pageText = "";
+                    let page = {Index:parseInt(e.page),max:parseInt(e.pageMax)};
+                    let Number=2;
+                    if(i>=(page.Index + Number >=page.max?page.max-Number*2:page.Index - Number) && i<= (page.Index-Number<=0?Number*2+1:page.Index + Number)){
+                        pageText = "<a "+pageClass+" onclick='onListPost("+i+","+(e.type? e.type:0)+")'>"+i+"</a>";
+                    }
+                    text += pageText;
+                }
+                text += "</div>";
+            }
+            return text;
+        };
+        $("ul",listel[p]).innerHTML = getList(json.text)+pageHTML(json);
     }
-    for(var i=0;i<listel.length;i++) {
-        loadXMLDoc("post.php?page=1&type="+i,"get",dataJson[i]);
+    onListPost = function(page,i){
+        sessionStorage.yanJinListPage = page;
+        sessionStorage.yanJinListType = i;
+        loadXMLDoc("post.php?page="+page+"&type="+i,"get",dataJson[i]);
     }
 
     //菜单导航
@@ -197,7 +243,7 @@
             }
         }
     });
-    set_list = function(e){
+    set_list = function(e,pa){
         var el = $("a",e.parentNode);
         var list = $(".list",$(".list_box"));
         var index = 0;
@@ -205,6 +251,7 @@
             if(el[i] == e){
                 index = i;
                 document.title = getTitle(i," 《食味草》双桥燕京中药饮片厂 - 食百味仙草，享健康人生。");
+                if($("li",listel[i]).length == 0 && !pa)onListPost(1,i);
                 e.setAttribute("class","index");
             }else{
                 el[i].removeAttribute("class");
@@ -218,8 +265,14 @@
             }
         }
     };
-    var list_index=0;
+
+    //首次加载按照页面加载
+    var page = isNull(sessionStorage.yanJinListPage)?sessionStorage.yanJinListPage:getURL("page")?getURL("page"):1;
+    var type = isNull(sessionStorage.yanJinListType)?sessionStorage.yanJinListType:getURL("type")?getURL("type"):0;
+    onListPost(page,type);
+    //初始化数据
+    var list_index=type;
     if(getURL("type"))list_index=getURL("type");
-    set_list($("a",$(".content_title"))[list_index]);
+    set_list($("a",$(".content_title"))[list_index],true);
 </script>
 </html>

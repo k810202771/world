@@ -7,7 +7,7 @@ $type = $_GET["type"];
 switch ($type) {
 	case 'image':
 		$path = $path."image";
-		$type = [".png",".jpg",".jpeg",".gif",".bmp"];
+		$type = [".png","jpeg",".jpg",".gif",".bmp"];
 		break;
 	case 'file':
 		$path = $path."file";
@@ -31,7 +31,7 @@ function traversing($path, &$result, $type){
                 //array_push($result, $f);
                 traversing($f, $result,$type);
             }else{
-            	for ($i=0; $i < count($type); $i++) { 
+            	for ($i=0; $i < count($type); $i++) {
             		if(strtolower(substr($f, -4))==$type[$i]){
                 		array_push($result, str_replace($_SERVER['DOCUMENT_ROOT'],"",$f));
             		}elseif ($type[$i] == ".*") {

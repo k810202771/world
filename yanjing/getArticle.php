@@ -15,8 +15,15 @@ $type = $_GET["type"];
 //取数据MD5
 $file = "save/article/article_".$type."_".$id.".json";
 if(file_exists($file)){
+	//发送MD5
+	header("Etag: ".md5_file($file));
 	if(@trim($_SERVER['HTTP_IF_NONE_MATCH']) == md5_file($file)){
 		header("HTTP/1.1 304 Not Modified");
+		exit();
+	}else{
+		$myfile = fopen($file, "r") or die("读入文件错误！");
+		echo fread($myfile,filesize($file));
+		fclose($myfile);
 		exit();
 	};
 };
@@ -24,18 +31,20 @@ if(file_exists($file)){
 //连接数据库
 require_once('root.php');
 
-// 上一条数据
-$sql = "SELECT * FROM article where type='".$type."' order by id desc limit ".($uid-2).",1";
-$result = mysql_query($sql,$link);
-$last = mysql_fetch_array($result);
-// 下一条数据
-$sql = "SELECT * FROM article where type='".$type."' order by id desc limit ".$uid.",1";
-$result = mysql_query($sql,$link);
-$next = mysql_fetch_array($result);
+
 // 获取数据
 $sql = "SELECT * FROM article where Uid='".$id."'";
 $result = mysql_query($sql,$link);
 $row = mysql_fetch_array($result);
+// 上一条数据
+$type = $row["type"];
+$sql = "SELECT * FROM article where type='".$type."' and type>0 and uid > ".$id." order by id asc limit 1";
+$result = mysql_query($sql,$link);
+$last = mysql_fetch_array($result);
+// 下一条数据
+$sql = "SELECT * FROM article where type='".$type."' and type>0 and uid < ".$id." order by id desc limit 1";
+$result = mysql_query($sql,$link);
+$next = mysql_fetch_array($result);
 $sql = "SELECT * FROM content where Uid='".$id."'";
 $result = mysql_query($sql,$link);
 $text = mysql_fetch_array($result);
