@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1">
+	<meta name="format-detection" content="telephone=no" >
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-touch-fullscreen" content="yes">
+
+	<title>exam</title>
+
+
+	<script src="phaser.min.js"></script>
+	<script src="map.js"></script>
+	<script src="actor.js"></script>
+	<script src="Enemy.js"></script>
+
+	<style>
+		html,body{
+			margin: 0;
+			width: 100%;
+			height: 100%;
+		}
+		body{
+			overflow: hidden;
+		}
+		.CrossScreen{
+			transform-origin: 0 100%;
+		}
+	</style>
+</head>
+<body>
+
+<script>
+
+    //初始化分辨率windowData
+	var windowData = {width:window.innerWidth,height:window.innerHeight,CrossScreen:true};
+
+    //刷新数据windowData
+    function setWindowData() {
+        if(windowData.CrossScreen && window.innerHeight > window.innerWidth){
+			windowData.width = window.innerHeight;
+			windowData.height = window.innerWidth;
+            return true;
+        }else{
+            windowData.width = window.innerWidth;
+            windowData.height = window.innerHeight;
+		}
+        return false;
+    }
+
+    //运行windowData
+    setWindowData();
+
+    var game = new Phaser.Game(windowData.width, windowData.height, Phaser.CANVAS, '', {preload: preload, create: create, update: update },false,true);
+
+    //创建组件
+    var map = new Map(5000,windowData.height);
+    var actor = new actor();
+    var Enemy = new Enemy();
+
+    //窗口改变大小时更新画布 - windowData
+    onresize = function () {
+        //运行windowData
+        setWindowData();
+
+        game.canvas.width = windowData.width;
+        game.canvas.height = windowData.height;
+        game.width = game.canvas.width;
+        game.height = game.canvas.height;
+		document.body.style.width = game.width;
+        document.body.style.height = game.height;
+        if(windowData.CrossScreen  && window.innerHeight > window.innerWidth){
+            game.canvas.className = "CrossScreen";
+            game.canvas.style.transform = "rotate(90deg) translateX(-"+windowData.height+"px)";
+		}else{
+            game.canvas.className = "";
+            game.canvas.style.transform = "rotate(0deg) translateX(0)";
+		}
+		if(AttackButton){
+            AttackButton.x = windowData.width - 180;
+            AttackButton.y = windowData.height - 180;
+		}
+    }
+
+
+    //初始化载入资源
+    function preload() {
+        //game.load.image('map1', 'assets/map/1.png');
+		//载入地图资源
+		map.preload();
+		//载入演员资源
+        actor.preload();
+        Enemy.preload();
+    }
+
+
+    var MoveSpeed=0; // 移动速度
+    var score = 0;
+    var scoreText;
+    var ObjectGroup;
+    var touchP = []
+    var operation={x:0,y:0,id:-1};
+
+    //初始化画布精灵
+    function create() {
+        //game.physics.startSystem(Phaser.Physics.NINJA);
+
+        //获取焦点后更新屏幕分辨率
+        game.onFocus.add(onresize);
+		onresize();
+
+		//创建地图背景
+        map.create();
+
+        //创建地图物件组
+        ObjectGroup = game.add.group();
+
+        actor.create();
+        //创建敌人
+        Enemy.create(0,game.world.height - 150);
+        Enemy.create(Math.random() * map.width,game.world.height - Math.random()*235);
+        Enemy.create(Math.random() * map.width,game.world.height - Math.random()*235);
+        Enemy.create(Math.random() * map.width,game.world.height - Math.random()*235);
+        Enemy.create(Math.random() * map.width,game.world.height - Math.random()*235);
+        Enemy.create(Math.random() * map.width,game.world.height - Math.random()*235);
+        Enemy.create(Math.random() * map.width,game.world.height - Math.random()*235);
+        Enemy.create(Math.random() * map.width,game.world.height - Math.random()*235);
+        Enemy.create(Math.random() * map.width,game.world.height - Math.random()*235);
+        Enemy.create(Math.random() * map.width,game.world.height - Math.random()*235);
+        Enemy.create(Math.random() * map.width,game.world.height - Math.random()*235);
+
+
+
+		var AttackButtonP = new AttackButtonBoolean();
+        function touch(e) {
+            //矫正坐标
+	        for(var i=0;i<e.changedTouches.length;i++) {
+	        	var event = e.changedTouches[i],value={};
+	        	if(setWindowData()){
+                	value = {x:event.clientY,y:windowData.height - event.clientX,id:event.identifier};
+                }else{
+                	value = {x:event.clientX,y:event.clientY,id:event.identifier};
+                }
+
+	            switch(e.type){
+	                case "touchstart":
+	                    if(AttackButtonP.isValue(value)){
+                            actor.AttackButtonOver(AttackButton);
+	                    }else{
+                            if(operation.id==-1)operation = value;
+						}
+
+	                	touchP.push(value);
+	                    break;
+	                case "touchmove":
+						touchP[i] = value;
+						
+						var WheelRadius = 32;
+	                	if(operation.id == touchP[i].id){
+							var WheelLength = {x:touchP[i].x - operation.x,y:touchP[i].y - operation.y};
+							if(WheelLength.x >= WheelRadius)WheelLength.x=WheelRadius;
+							if(WheelLength.x <= -WheelRadius)WheelLength.x=-WheelRadius;
+							if(WheelLength.y >= WheelRadius)WheelLength.y=WheelRadius;
+							if(WheelLength.y <= -WheelRadius)WheelLength.y=-WheelRadius;
+							Roulette.x = (100/WheelRadius * WheelLength.x)/100;
+							Roulette.y = (100/WheelRadius * WheelLength.y)/100;
+	                	}
+
+		                
+	                    break;
+	                case "touchend":
+	                	if(AttackButtonP.id == e.changedTouches[i].identifier){
+                        	actor.AttackButtonOnClick(AttackButton);
+                        }
+	                	if(e.changedTouches[i].identifier == touchP[i].id){
+	                		if(touchP[i].id == operation.id){operation.id = -1;Roulette = {x:0,y:0}}
+                        	touchP.splice(i,1);
+	                	}
+
+	                    break;
+	
+				}
+
+
+			}
+
+
+        }
+        game.canvas.addEventListener("touchstart",touch)
+        game.canvas.addEventListener("touchmove",touch)
+        game.canvas.addEventListener("touchend",touch)
+    }
+
+    //刷新画布
+    function update() {
+
+        //刷新地图
+        map.update();
+        actor.update();
+        Enemy.update();
+
+        //排序精灵
+        ObjectGroup.sort('y', Phaser.Group.SORT_ASCENDING);
+    }
+
+
+
+</script>
+
+</body>
